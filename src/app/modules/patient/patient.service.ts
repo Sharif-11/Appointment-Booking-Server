@@ -4,7 +4,7 @@ import Patient from './patient.model'
 import User from '../user/user.model'
 
 const createPatientService = async userData => {
-  const role = 'patients'
+  const role = 'patient'
   const { name, email, phoneNo, password, dateOfBirth, familyMembers } =
     userData
   const user = { phoneNo, password, role }
@@ -27,7 +27,7 @@ const createPatientService = async userData => {
   } catch (error) {
     await session.abortTransaction()
     await session.endSession()
-    console.log('errors===', error)
+
     throw error
   }
 }
