@@ -9,7 +9,7 @@
     "lint:fix": "eslint --fix",
     "prettier:fix":"prettier --write .",
     "prettier:check": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
-    "lint:prettier": "yarn lint:check && yarn prettier:check",
+    "lint:prettier": "yarn lint:check && yarn prettier:check && yarn lint:fix && prettier:fix",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "lint-staged": {
