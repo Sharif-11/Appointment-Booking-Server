@@ -7,7 +7,7 @@
     "start": "ts-node-dev --respawn --transpile-only src/server.ts",
     "lint:check": "eslint --ignore-path .eslintignore --ext .js,.ts .",
     "lint:fix": "eslint --fix",
-    "prettier:fix":"prettier --write .",
+    "prettier:fix": "prettier --write .",
     "prettier:check": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
     "lint:prettier": "yarn lint:check && yarn prettier:check && yarn lint:fix && prettier:fix",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -35,6 +35,7 @@
     "dotenv": "^16.3.1",
     "eslint": "^8.46.0",
     "express": "^4.18.2",
+    "express-validator": "^7.0.1",
     "mongoose": "^7.4.1"
   }
 }
