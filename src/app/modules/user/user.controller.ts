@@ -14,7 +14,7 @@ const loginController: RequestHandler = async (req, res, next) => {
     res.status(200).json({
       status: true,
       message: 'log in successful',
-      data: { token },
+      data: { token, user },
     })
   } catch (error) {
     res.status(401).json({
