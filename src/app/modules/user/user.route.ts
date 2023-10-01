@@ -19,5 +19,6 @@ userRoutes.post(
   userValidator.validateLogin,
   userControllers.loginController,
 )
+userRoutes.get('/check-login', userControllers.checkLoginController)
 
 export default userRoutes
