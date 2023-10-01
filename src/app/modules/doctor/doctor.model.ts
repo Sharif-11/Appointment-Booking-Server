@@ -31,6 +31,7 @@ const doctorSchema = new Schema<IDoctor>(
   },
   {
     timestamps: true,
+    toJSON: { virtuals: true },
   },
 )
 const Doctor = model<IDoctor, DoctorModel>('doctor', doctorSchema)

@@ -1,6 +1,7 @@
 import { Schema, model } from 'mongoose'
 import IUser, { UserModel } from './user.interface'
-
+import config from '../../../config'
+import bcrypt from 'bcrypt'
 const userSchema = new Schema<IUser>(
   {
     phoneNo: {
@@ -25,21 +26,22 @@ const userSchema = new Schema<IUser>(
   },
   {
     timestamps: true,
+    toJSON: {
+      virtuals: true,
+    },
   },
 )
 userSchema.pre('save', async function (next) {
-  try {
-    const existingUser = await this.constructor.findOne({
-      phoneNo: this.phoneNo,
-    })
-    if (existingUser && !existingUser._id.equals(this._id)) {
-      throw new Error('Phone number must be unique.')
-    }
-    next()
-  } catch (error) {
-    throw error
-  }
+  this.password = await bcrypt.hash(
+    this.password,
+    Number(config.salt_round as string),
+    err => {
+      console.log('hash error===', err)
+    },
+  )
+  next()
 })
+
 const User = model<IUser, UserModel>('user', userSchema)
 
 export default User
