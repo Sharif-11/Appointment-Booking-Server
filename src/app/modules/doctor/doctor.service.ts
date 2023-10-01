@@ -20,7 +20,6 @@ const createDoctorService = async userData => {
     }
     await session.commitTransaction()
     await session.endSession()
-    return newUser[0]
   } catch (error) {
     await session.abortTransaction()
     await session.endSession()

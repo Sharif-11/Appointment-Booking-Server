@@ -2,9 +2,8 @@ import mongoose from 'mongoose'
 import IPatient from './patient.interface'
 import Patient from './patient.model'
 import User from '../user/user.model'
-import IUser from '../user/user.interface'
 
-const createPatientService = async (userData: Promise<IUser>) => {
+const createPatientService = async userData => {
   const role = 'patient'
   const { name, email, phoneNo, password, dateOfBirth, familyMembers } =
     userData
@@ -25,11 +24,11 @@ const createPatientService = async (userData: Promise<IUser>) => {
     }
     await session.commitTransaction()
     await session.endSession()
-    return newUser[0]
   } catch (error) {
     await session.abortTransaction()
     await session.endSession()
     throw error
   }
 }
+
 export const patientServices = { createPatientService }

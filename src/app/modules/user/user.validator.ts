@@ -66,4 +66,18 @@ const validateDoctor = [
   handleValidationError,
   // Handle validation errors in your route handler
 ]
-export const userValidator = { validateDoctor, validatePatient }
+const validateLogin = [
+  body('phoneNo')
+    .notEmpty()
+    .withMessage('Phone number is required')
+    .isString()
+    .withMessage('Phone number must be a string'),
+
+  body('password')
+    .notEmpty()
+    .withMessage('Password is required')
+    .isString()
+    .withMessage('Password must be a string'),
+  handleValidationError,
+]
+export const userValidator = { validateDoctor, validateLogin, validatePatient }
