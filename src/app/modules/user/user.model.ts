@@ -35,10 +35,8 @@ userSchema.pre('save', async function (next) {
   this.password = await bcrypt.hash(
     this.password,
     Number(config.salt_round as string),
-    err => {
-      console.log('hash error===', err)
-    },
   )
+
   next()
 })
 

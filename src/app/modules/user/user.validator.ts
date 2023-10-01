@@ -57,6 +57,12 @@ const validateDoctor = [
   body('academicQualifications.*.institute')
     .notEmpty()
     .withMessage('Institute is required for all qualifications'),
+  body('academicQualifications.*.startTime')
+    .notEmpty()
+    .withMessage('startTime is required for all qualifications'),
+  body('academicQualifications.*.endTime')
+    .notEmpty()
+    .withMessage('endTime is required for all qualifications'),
   handleValidationError,
   // Handle validation errors in your route handler
 ]
