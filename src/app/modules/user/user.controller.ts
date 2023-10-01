@@ -51,4 +51,27 @@ const checkLoginController: RequestHandler = async (req, res, next) => {
     })
   }
 }
-export const userControllers = { loginController, checkLoginController }
+const updatePasswordController: RequestHandler = async (req, res, next) => {
+  try {
+    let { password } = req.body
+    const { phoneNo } = req.decoded
+    password = await bcrypt.hash(password, Number(config.salt_round as string))
+    const updatedUser = await userServices.updateUserPassword(phoneNo, password)
+    res.status(200).json({
+      status: true,
+      message: 'password updated successfully',
+      data: updatedUser,
+    })
+  } catch (error) {
+    console.log('error 68==', error)
+    res.status(500).json({
+      status: false,
+      message: 'password update failed',
+    })
+  }
+}
+export const userControllers = {
+  loginController,
+  checkLoginController,
+  updatePasswordController,
+}

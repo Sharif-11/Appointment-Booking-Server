@@ -20,8 +20,7 @@ const verifyTokenMiddleware: RequestHandler = (req, res, next) => {
       })
     }
     req.decoded = decoded
-    console.log('decoded===', decoded)
     next()
   })
 }
-export const middlewares = { verifyTokenMiddleware }
+export const authMiddlewares = { verifyTokenMiddleware }
