@@ -5,7 +5,7 @@ interface IDoctor {
   name: string
   designation: string
   email: string
-  academicQualifications: [
+  academicQualifications?: [
     {
       degree: string
       institute: string

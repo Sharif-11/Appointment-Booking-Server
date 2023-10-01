@@ -1,20 +1,16 @@
 import { RequestHandler } from 'express'
-import IDoctor from './doctor.interface'
 import { doctorServices } from './doctor.service'
+import { userAuth } from '../user/user.auth'
 const createDoctorController: RequestHandler = async (req, res) => {
-  const { name, email, academicQualifications, designation }: IDoctor = req.body
   await doctorServices
-    .createDoctorService({
-      name,
-      email,
-      designation,
-      academicQualifications,
-    })
-    .then(doctor => {
+    .createDoctorService(req.body)
+    .then(async user => {
+      const { phoneNo, password, role } = user
+      const token = await userAuth.createToken(phoneNo, role, password)
       res.status(200).json({
         status: true,
         message: 'doctor created successfully',
-        data: doctor,
+        data: { token },
       })
     })
     .catch(err => {

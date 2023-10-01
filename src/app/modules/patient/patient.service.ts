@@ -29,7 +29,6 @@ const createPatientService = async (userData: Promise<IUser>) => {
   } catch (error) {
     await session.abortTransaction()
     await session.endSession()
-
     throw error
   }
 }
