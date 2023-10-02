@@ -18,5 +18,6 @@ interface ISlot {
   capacity: number
   visitingFee: number
 }
+export interface OptionalSlot extends Partial<ISlot> {}
 export type SlotModel = Model<ISlot, Record<string, unknown>>
 export default ISlot

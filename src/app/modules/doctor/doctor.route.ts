@@ -7,4 +7,6 @@ doctorRoutes.post(
   slotValidators.validateSlot,
   slotControllers.createSlotController,
 )
+doctorRoutes.get('/slots', slotControllers.getSlotsController)
+doctorRoutes.delete('/slot/:id', slotControllers.deleteSlotController)
 export default doctorRoutes
