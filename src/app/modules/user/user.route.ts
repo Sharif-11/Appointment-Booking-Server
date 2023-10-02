@@ -6,12 +6,12 @@ import { userControllers } from './user.controller'
 import { authMiddlewares } from '../../middlewares/auth.middleware'
 const userRoutes = express.Router()
 userRoutes.post(
-  '/create-doctor',
+  '/doctor',
   userValidator.validateDoctor,
   doctorControllers.createDoctorController,
 )
 userRoutes.post(
-  '/create-patient',
+  '/patient',
   userValidator.validatePatient,
   patientControllers.createPatientController,
 )
@@ -20,9 +20,9 @@ userRoutes.post(
   userValidator.validateLogin,
   userControllers.loginController,
 )
-userRoutes.get('/check-login', userControllers.checkLoginController)
+userRoutes.get('/login', userControllers.checkLoginController)
 userRoutes.patch(
-  '/update-password',
+  '/password',
   authMiddlewares.verifyTokenMiddleware,
   userControllers.updatePasswordController,
 )

@@ -63,7 +63,6 @@ const updatePasswordController: RequestHandler = async (req, res, next) => {
       data: updatedUser,
     })
   } catch (error) {
-    console.log('error 68==', error)
     res.status(500).json({
       status: false,
       message: 'password update failed',
