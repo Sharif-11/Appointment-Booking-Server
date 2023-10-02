@@ -51,28 +51,25 @@ const deleteSlotController: RequestHandler = async (req, res, next) => {
     })
   }
 }
-const updateSlotController: RequestHandler = async (req, res, next) => {
-  try {
-    const { id } = req.params
-    const updateObject = req.body
-    const updatedSlot = await slotServices.updateSlot(id, updateObject)
-    res.status(200).json({
-      status: true,
-      message: 'slot updated successfully',
-      data: updatedSlot,
-    })
-  } catch (error) {
-    console.log('update error==', error)
-    res.status(500).json({
-      status: false,
-      message: 'slot update failed',
-      errors: [error?.message],
-    })
-  }
-}
+// const updateSlotController: RequestHandler = async (req, res, next) => {
+//   try {
+//     const { id } = req.params
+//     const updatedSlot = await slotServices.updateSlot(id, req.body)
+//     res.status(200).json({
+//       status: true,
+//       message: 'slot update successful',
+//       data: updatedSlot._id,
+//     })
+//   } catch (error) {
+//     res.status(500).json({
+//       status: false,
+//       message: 'slot update failed',
+//       errors: [error?.message],
+//     })
+//   }
+// }
 export const slotControllers = {
   createSlotController,
   getSlotsController,
   deleteSlotController,
-  updateSlotController,
 }
