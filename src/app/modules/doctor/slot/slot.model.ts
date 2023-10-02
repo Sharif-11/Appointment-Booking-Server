@@ -49,36 +49,64 @@ const slotSchema = new Schema<ISlot>({
 
 // Define a pre-save hook to check for overlapping slots
 slotSchema.pre('save', async function (next) {
-  let { startTime, endTime, bookingStartTime, bookingEndTime } = this
-  const { weekDay } = this
-  startTime = slotUtilityFuntions.convertTo24HourFormat(startTime)
-  endTime = slotUtilityFuntions.convertTo24HourFormat(endTime)
-  bookingStartTime = slotUtilityFuntions.convertTo24HourFormat(bookingStartTime)
-  bookingEndTime = slotUtilityFuntions.convertTo24HourFormat(bookingEndTime)
-  if (endTime <= startTime) {
-    throw new Error('startTime must be less than endTime')
-  } else if (bookingEndTime <= bookingStartTime) {
-    throw new Error('bookingStartTime must be less than bookingEndTime')
-  } else if (bookingEndTime > startTime) {
-    throw new Error('bookingEndTime must be less than or equal to startTime')
+  const { startTime, endTime, bookingStartTime, bookingEndTime, weekDay } = this
+  const { status, message, data } =
+    await slotUtilityFuntions.slotModelValidator(
+      weekDay,
+      startTime,
+      endTime,
+      bookingStartTime,
+      bookingEndTime,
+    )
+  if (!status) {
+    throw new Error(message as string)
   }
-  // Check if there is any slot with the same weekDay and overlapping time
-  const overlappingSlot = await mongoose.models.Slot.findOne({
-    weekDay,
-    $or: [
-      { startTime: { $lt: endTime, $gte: startTime } },
-      { endTime: { $gt: startTime, $lte: endTime } },
-    ],
-  })
-
-  if (overlappingSlot) {
-    const err = new Error('Slot is overlapped with already existed slot')
-    throw err
+  this.startTime = data.startTime
+  this.endTime = data.endTime
+  this.bookingStartTime = data.bookingStartTime
+  this.bookingEndTime = data.bookingEndTime
+  next()
+})
+slotSchema.post('find', function (docs, next) {
+  if (Array.isArray(docs)) {
+    // Loop through the documents and convert the time format
+    docs.forEach(doc => {
+      if (doc.startTime) {
+        doc.startTime = slotUtilityFuntions.convertTo12HourFormat(doc.startTime)
+      }
+      if (doc.endTime) {
+        doc.endTime = slotUtilityFuntions.convertTo12HourFormat(doc.endTime)
+      }
+      if (doc.bookingStartTime) {
+        doc.bookingStartTime = slotUtilityFuntions.convertTo12HourFormat(
+          doc.bookingStartTime,
+        )
+      }
+      if (doc.bookingEndTime) {
+        doc.bookingEndTime = slotUtilityFuntions.convertTo12HourFormat(
+          doc.bookingEndTime,
+        )
+      }
+    })
+  } else {
+    // Single document case
+    if (docs.startTime) {
+      docs.startTime = slotUtilityFuntions.convertTo12HourFormat(docs.startTime)
+    }
+    if (docs.endTime) {
+      docs.endTime = slotUtilityFuntions.convertTo12HourFormat(docs.endTime)
+    }
+    if (docs.bookingStartTime) {
+      docs.bookingStartTime = slotUtilityFuntions.convertTo12HourFormat(
+        docs.bookingStartTime,
+      )
+    }
+    if (docs.bookingEndTime) {
+      docs.bookingEndTime = slotUtilityFuntions.convertTo12HourFormat(
+        docs.bookingEndTime,
+      )
+    }
   }
-  this.startTime = startTime
-  this.endTime = endTime
-  this.bookingStartTime = bookingStartTime
-  this.bookingEndTime = bookingEndTime
   next()
 })
 

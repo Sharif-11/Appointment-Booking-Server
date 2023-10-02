@@ -1,3 +1,5 @@
+import mongoose from 'mongoose'
+import { SlotTime, weekDays } from './slot.interface'
 const convertTo12HourFormat = (time24: string): string => {
   // Split the time into hours and minutes
   const [hours, minutes] = time24.split(':').map(Number)
@@ -32,8 +34,63 @@ const convertTo24HourFormat = (time12: string): string => {
 
   return time24
 }
+async function slotModelValidator(
+  weekDay: weekDays,
+  startTime: string,
+  endTime: string,
+  bookingStartTime: string,
+  bookingEndTime: string,
+): Promise<{
+  status: boolean
+  message?: string
+  data: SlotTime
+}> {
+  startTime = convertTo24HourFormat(startTime)
+  endTime = convertTo24HourFormat(endTime)
+  bookingStartTime = convertTo24HourFormat(bookingStartTime)
+  bookingEndTime = convertTo24HourFormat(bookingEndTime)
+  if (endTime <= startTime) {
+    return {
+      status: false,
+      message: 'startTime must be less than endTime',
+      data: { startTime, endTime, bookingStartTime, bookingEndTime },
+    }
+  } else if (bookingEndTime <= bookingStartTime) {
+    return {
+      status: false,
+      message: 'bookingStartTime must be less than bookingEndTime',
+      data: { startTime, endTime, bookingStartTime, bookingEndTime },
+    }
+  } else if (bookingEndTime > startTime) {
+    return {
+      status: false,
+      message: 'bookingStartTime must be less than or equal to  endTime',
+      data: { startTime, endTime, bookingStartTime, bookingEndTime },
+    }
+  }
+  // Additional pre-update validation logic here...
+  const overlappingSlot = await mongoose.models.Slot.findOne({
+    weekDay,
+    $or: [
+      { startTime: { $lt: endTime, $gte: startTime } },
+      { endTime: { $gt: startTime, $lte: endTime } },
+    ],
+  })
 
+  if (overlappingSlot) {
+    return {
+      status: false,
+      message: 'Slot is overlapped with already existed slot',
+      data: { startTime, endTime, bookingStartTime, bookingEndTime },
+    }
+  }
+  return {
+    status: true,
+    data: { startTime, endTime, bookingStartTime, bookingEndTime },
+  }
+}
 export const slotUtilityFuntions = {
   convertTo12HourFormat,
   convertTo24HourFormat,
+  slotModelValidator,
 }

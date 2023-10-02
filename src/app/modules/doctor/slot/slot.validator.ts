@@ -69,4 +69,5 @@ const validateSlot = [
     .withMessage('Visiting fee must be between 100 and 2000'),
   handleValidationError,
 ]
+
 export const slotValidators = { validateSlot }
