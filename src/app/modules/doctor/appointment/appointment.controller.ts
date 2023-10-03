@@ -3,12 +3,9 @@ import { appointmentServices } from './appointment.service'
 
 const createAppointmentController: RequestHandler = async (req, res) => {
   try {
-    const { slotId, date } = req.body
+    const { slotId } = req.body
 
-    const appointment = await appointmentServices.createAppointment(
-      slotId,
-      date,
-    )
+    const appointment = await appointmentServices.createAppointment(slotId)
     res.status(200).send({
       status: true,
       message: 'Appointment created successfully',

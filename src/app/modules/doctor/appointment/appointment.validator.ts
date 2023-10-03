@@ -17,7 +17,6 @@ const handleValidationError = (
 }
 const appointmentValidate = [
   body('slotId').isMongoId().withMessage('invalid slotId'),
-  body('date').isDate(),
   handleValidationError,
 ]
 export default appointmentValidate
