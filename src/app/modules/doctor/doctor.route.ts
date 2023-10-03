@@ -29,5 +29,9 @@ doctorRoutes.patch(
   '/appointment/close-appointment/:id',
   appointmentControllers.closeAppointmentController,
 )
+doctorRoutes.delete(
+  '/appointment/:id',
+  appointmentControllers.deleteAppointmentController,
+)
 //doctorRoutes.put('/slot/:id', slotControllers.updateSlotController)
 export default doctorRoutes

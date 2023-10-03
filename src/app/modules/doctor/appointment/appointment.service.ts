@@ -99,9 +99,32 @@ const closeAppointment = async (id: string) => {
   )
   return closedAppointment
 }
-
+const deleteAppoinment = async (id: string) => {
+  const appoinment = await Appointment.findById(id)
+  if (!appoinment) {
+    throw new Error(`Appointment with this id doesn't exist`)
+  }
+  if (appoinment.status === 'running') {
+    throw new Error(`Running appointment can't be deleted`)
+  } else if (appoinment.status === 'closed') {
+    const result = await Appointment.findByIdAndDelete(id)
+    return result
+  } else {
+    const pendingPatient = await Booking.findOne({
+      serviceStatus: 'pending',
+    })
+    if (pendingPatient) {
+      throw new Error(
+        `Appoinment which has any booked patient can't be deleted`,
+      )
+    }
+    const result = await Appointment.findByIdAndDelete(id)
+    return result
+  }
+}
 export const appointmentServices = {
   createAppointment,
   startAppointment,
   closeAppointment,
+  deleteAppoinment,
 }

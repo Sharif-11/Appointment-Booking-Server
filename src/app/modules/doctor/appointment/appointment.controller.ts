@@ -52,8 +52,26 @@ const closeAppointmentController: RequestHandler = async (req, res) => {
     })
   }
 }
+const deleteAppointmentController: RequestHandler = async (req, res) => {
+  try {
+    const { id } = req.params
+    const data = await appointmentServices.deleteAppoinment(id)
+    res.status(200).json({
+      status: true,
+      message: 'appointment deleted successfully',
+      data,
+    })
+  } catch (error) {
+    res.status(500).json({
+      status: false,
+      message: 'appointment deletion failed',
+      errors: [error.message],
+    })
+  }
+}
 export const appointmentControllers = {
   createAppointmentController,
   startAppointmentController,
   closeAppointmentController,
+  deleteAppointmentController,
 }
