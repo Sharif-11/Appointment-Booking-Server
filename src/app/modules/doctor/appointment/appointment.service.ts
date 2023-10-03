@@ -88,12 +88,18 @@ const closeAppointment = async (id: string) => {
   if (unservedPatient) {
     throw new Error('There are some patient yet to be served')
   }
-  const closedAppointment = await Appointment.findByIdAndUpdate(id, {
-    $set: {
-      status: 'closed',
+  const closedAppointment = await Appointment.findByIdAndUpdate(
+    id,
+    {
+      $set: {
+        status: 'closed',
+      },
     },
-  })
+    { new: true },
+  )
+  return closedAppointment
 }
+
 export const appointmentServices = {
   createAppointment,
   startAppointment,

@@ -38,10 +38,11 @@ const startAppointmentController: RequestHandler = async (req, res) => {
 const closeAppointmentController: RequestHandler = async (req, res) => {
   try {
     const { id } = req.params
-    await appointmentServices.closeAppointment(id)
+    const data = await appointmentServices.closeAppointment(id)
     res.status(200).json({
       status: true,
       message: 'appoinment closed successfully',
+      data,
     })
   } catch (error) {
     res.status(500).json({
