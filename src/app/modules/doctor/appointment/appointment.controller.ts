@@ -19,7 +19,7 @@ const createAppointmentController: RequestHandler = async (req, res) => {
     })
   }
 }
-const startAppointmentController: RequestHandler = async (req, res, next) => {
+const startAppointmentController: RequestHandler = async (req, res) => {
   try {
     const { id } = req.params
     await appointmentServices.startAppointment(id)
@@ -35,7 +35,24 @@ const startAppointmentController: RequestHandler = async (req, res, next) => {
     })
   }
 }
+const closeAppointmentController: RequestHandler = async (req, res) => {
+  try {
+    const { id } = req.params
+    await appointmentServices.closeAppointment(id)
+    res.status(200).json({
+      status: true,
+      message: 'appoinment closed successfully',
+    })
+  } catch (error) {
+    res.status(500).json({
+      status: false,
+      message: 'appoinment closing failed',
+      errors: [error.message],
+    })
+  }
+}
 export const appointmentControllers = {
   createAppointmentController,
   startAppointmentController,
+  closeAppointmentController,
 }

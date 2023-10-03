@@ -68,9 +68,34 @@ const startAppointment = async (id: string) => {
     throw error
   }
 }
-const deleteAppointment = async (id: string) => {}
+const closeAppointment = async (id: string) => {
+  const appointment = await Appointment.findById(id)
+  if (!appointment) {
+    throw new Error(`Appointment with this id doesn't exist`)
+  }
+  if (appointment.status === 'pending') {
+    throw new Error(`This appointment doesn't started yet`)
+  }
+  if (appointment.status === 'closed') {
+    throw new Error('This appoinment closed already')
+  }
+  const unservedPatient = await Booking.findOne({
+    appointmentId: appointment._id,
+    serviceStatus: {
+      $in: ['waiting', 'in service'],
+    },
+  })
+  if (unservedPatient) {
+    throw new Error('There are some patient yet to be served')
+  }
+  const closedAppointment = await Appointment.findByIdAndUpdate(id, {
+    $set: {
+      status: 'closed',
+    },
+  })
+}
 export const appointmentServices = {
   createAppointment,
   startAppointment,
-  deleteAppointment,
+  closeAppointment,
 }
