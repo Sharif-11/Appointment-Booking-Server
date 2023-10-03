@@ -19,4 +19,23 @@ const createAppointmentController: RequestHandler = async (req, res) => {
     })
   }
 }
-export const appointmentControllers = { createAppointmentController }
+const startAppointmentController: RequestHandler = async (req, res, next) => {
+  try {
+    const { id } = req.params
+    await appointmentServices.startAppointment(id)
+    res.status(200).json({
+      status: true,
+      message: 'appointment started successfully',
+    })
+  } catch (error) {
+    res.status(500).json({
+      status: false,
+      message: 'Appointment starting failed',
+      errors: [error.message],
+    })
+  }
+}
+export const appointmentControllers = {
+  createAppointmentController,
+  startAppointmentController,
+}

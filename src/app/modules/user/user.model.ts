@@ -32,12 +32,18 @@ const userSchema = new Schema<IUser>(
   },
 )
 userSchema.pre('save', async function (next) {
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
+  const user = this
   this.password = await bcrypt.hash(
     this.password,
     Number(config.salt_round as string),
   )
-
-  next()
+  const existedUser = await User.findOne({ phoneNo: user.phoneNo })
+  if (existedUser) {
+    next('Phone number already in use')
+  } else {
+    next()
+  }
 })
 
 const User = model<IUser, UserModel>('user', userSchema)

@@ -21,5 +21,9 @@ doctorRoutes.post(
   appointmentValidate,
   appointmentControllers.createAppointmentController,
 )
+doctorRoutes.patch(
+  '/appointment/start-appointment/:id',
+  appointmentControllers.startAppointmentController,
+)
 //doctorRoutes.put('/slot/:id', slotControllers.updateSlotController)
 export default doctorRoutes

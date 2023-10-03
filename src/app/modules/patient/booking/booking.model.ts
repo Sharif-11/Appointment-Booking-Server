@@ -25,6 +25,11 @@ const bookingSchema = new Schema<IBooking>({
     enum: ['paid', 'unpaid'],
     required: true,
   },
+  serviceStatus: {
+    type: String,
+    enum: ['in service', 'pending', 'waiting', 'served'],
+    required: true,
+  },
 })
 const Booking = model<IBooking, BookingModel>('booking', bookingSchema)
 export default Booking

@@ -7,6 +7,7 @@ interface IBooking {
   paymentId?: Schema.Types.ObjectId
   problemDescription?: string
   paymentStatus: 'paid' | 'unpaid'
+  serviceStatus: 'pending' | 'in service' | 'waiting' | 'served'
 }
 export type BookingModel = Model<IBooking, Record<string, unknown>>
 export default IBooking

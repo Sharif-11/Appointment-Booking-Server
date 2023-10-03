@@ -37,6 +37,7 @@ const createBooking = async (
     appointmentId: appointment._id,
     problemDescription,
     paymentStatus: 'unpaid',
+    serviceStatus: 'pending',
   }
   const session = await mongoose.startSession()
   try {

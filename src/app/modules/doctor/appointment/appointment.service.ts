@@ -1,7 +1,9 @@
+import mongoose from 'mongoose'
 import { daysOfWeek } from '../doctor.constant'
 import Slot from '../slot/slot.model'
 import Appointment from './appointment.model'
 import formatDate from './appointment.utils'
+import Booking from '../../patient/booking/booking.model'
 
 const createAppointment = async (id: string) => {
   const slot = await Slot.findById(id)
@@ -24,39 +26,51 @@ const createAppointment = async (id: string) => {
   return newAppointment
 }
 const startAppointment = async (id: string) => {
-  const slot = await Slot.findById(id)
+  const appointment = await Appointment.findById(id)
 
-  if (!slot) {
-    throw new Error("slot with this id don't exists")
+  if (!appointment) {
+    throw new Error("Appointment with this id don't exists")
   }
   const currentDate = new Date()
   const today = daysOfWeek[currentDate.getDay()]
-  if (today !== slot.weekDay) {
+  const weekDay = daysOfWeek[new Date(appointment.date).getDay()]
+  if (today !== weekDay) {
     throw new Error(`You can't start this appointment now`)
   }
-  const updatedAppointment = await Appointment.findByIdAndUpdate(
-    id,
-    {
-      status: 'running',
-    },
-    { new: true },
-  )
-  return updatedAppointment
-}
-const bookAppointment = async (id: string) => {
-  const updatedAppointment = await Appointment.findByIdAndUpdate(
-    id,
-    {
-      $inc: {
-        remainingSlots: -1,
+  const session = await mongoose.startSession()
+  try {
+    await session.startTransaction()
+    const updatedAppointment = await Appointment.findByIdAndUpdate(
+      appointment._id,
+      {
+        $set: {
+          status: 'running',
+        },
       },
-    },
-    { new: true },
-  )
-  return updatedAppointment
+      { new: true },
+    ).session(session)
+    if (!updatedAppointment) {
+      throw new Error('starting appointment failed')
+    }
+    await Booking.updateMany(
+      {},
+      {
+        $set: {
+          serviceStatus: 'waiting',
+        },
+      },
+    ).session(session)
+    await session.commitTransaction()
+    await session.endSession()
+  } catch (error) {
+    await session.abortTransaction()
+    await session.endSession()
+    throw error
+  }
 }
+const deleteAppointment = async (id: string) => {}
 export const appointmentServices = {
   createAppointment,
   startAppointment,
-  bookAppointment,
+  deleteAppointment,
 }
