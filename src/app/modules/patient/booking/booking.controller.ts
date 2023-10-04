@@ -50,6 +50,7 @@ const checkBookingController: RequestHandler = async (req, res) => {
       )
   }
 }
+
 export const bookingControllers = {
   createBookingController,
   checkBookingController,

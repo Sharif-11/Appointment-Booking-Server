@@ -128,10 +128,17 @@ const getAppointments = async () => {
   })
   return appointments
 }
+const getUpcomingAppointment = async (date: string) => {
+  const result = await Appointment.find({
+    date: formatDate(new Date(date)),
+  }).sort({ createdAt: -1 })
+  return result
+}
 export const appointmentServices = {
   createAppointment,
   startAppointment,
   closeAppointment,
   deleteAppoinment,
   getAppointments,
+  getUpcomingAppointment,
 }

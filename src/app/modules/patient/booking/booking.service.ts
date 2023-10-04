@@ -78,4 +78,8 @@ const checkBooking = async (appointmentId: string, phoneNo: string) => {
   })
   return existedBooking
 }
-export const bookingServices = { createBooking, checkBooking }
+
+export const bookingServices = {
+  createBooking,
+  checkBooking,
+}

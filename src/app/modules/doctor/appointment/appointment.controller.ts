@@ -85,10 +85,28 @@ const getAppointmentsController: RequestHandler = async (req, res) => {
     })
   }
 }
+const getUpcomingAppointmentsController: RequestHandler = async (req, res) => {
+  try {
+    const { date } = req.body
+    const result = await appointmentServices.getUpcomingAppointment(date)
+    res.status(200).json({
+      status: 200,
+      message: 'todays appointments found successfully',
+      data: result,
+    })
+  } catch (error) {
+    res.status(500).json({
+      status: 200,
+      message: 'todays appointments are not found successfully',
+      errors: [error.message],
+    })
+  }
+}
 export const appointmentControllers = {
   createAppointmentController,
   startAppointmentController,
   closeAppointmentController,
   deleteAppointmentController,
   getAppointmentsController,
+  getUpcomingAppointmentsController,
 }
