@@ -70,4 +70,12 @@ const createBooking = async (
     throw error
   }
 }
-export const bookingServices = { createBooking }
+const checkBooking = async (appointmentId: string, phoneNo: string) => {
+  const user = await User.findOne({ phoneNo })
+  const existedBooking = await Booking.findOne({
+    appointmentId,
+    userId: user._id,
+  })
+  return existedBooking
+}
+export const bookingServices = { createBooking, checkBooking }

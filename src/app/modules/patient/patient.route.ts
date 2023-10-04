@@ -8,4 +8,5 @@ patientRoutes.use(
   authMiddlewares.verifyUser('patient'),
 )
 patientRoutes.post('/booking/:id', bookingControllers.createBookingController)
+patientRoutes.get('/booking/:id', bookingControllers.checkBookingController)
 export default patientRoutes
