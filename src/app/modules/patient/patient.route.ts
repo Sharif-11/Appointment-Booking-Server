@@ -32,6 +32,11 @@ patientRoutes.get(
   '/family-members',
   patientControllers.getFamilyMembersController,
 )
+patientRoutes.patch(
+  '/remove-member',
+  patientValidators.validateMongooseId,
+  patientControllers.removeFamilyMemberController,
+)
 patientRoutes.get(
   '/profile',
 

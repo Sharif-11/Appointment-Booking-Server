@@ -87,10 +87,29 @@ const getFamilyMembersController: RequestHandler = async (req, res) => {
     })
   }
 }
+const removeFamilyMemberController: RequestHandler = async (req, res) => {
+  try {
+    const { phoneNo } = req.decoded
+    const { id } = req.body
+    const data = await patientServices.removeFamilyMember(phoneNo, id)
+    res.status(200).json({
+      status: true,
+      message: 'family member removed successfully',
+      data,
+    })
+  } catch (error) {
+    res.status(500).json({
+      status: false,
+      message: 'family member deletion failed',
+      errors: [error.message],
+    })
+  }
+}
 export const patientControllers = {
   createPatientController,
   updatedPatientController,
   getPatientProfileController,
   addFamilyMembersController,
   getFamilyMembersController,
+  removeFamilyMemberController,
 }

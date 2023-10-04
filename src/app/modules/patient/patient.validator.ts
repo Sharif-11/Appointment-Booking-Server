@@ -1,3 +1,4 @@
+import mongoose from 'mongoose'
 import handleValidationError from '../../middlewares/req.validator'
 
 import { body, check } from 'express-validator'
@@ -40,4 +41,24 @@ const validateFamilyMembers = [
     .isDate({ format: 'YYYY-MM-DD' })
     .withMessage('Date of birth must be a valid date'),
 ]
-export const patientValidators = { validatePatient, validateFamilyMembers }
+const validateFamilyMember = [
+  body('name').isString().withMessage('Name must be a string'),
+  body('dateOfBirth')
+    .isDate({ format: 'YYYY-MM-DD' })
+    .withMessage('Date of birth must be a valid date'),
+  handleValidationError,
+]
+const validateObjectId = value => {
+  if (!mongoose.Types.ObjectId.isValid(value)) {
+    throw new Error('Invalid ObjectId')
+  }
+  return true
+}
+
+const validateMongooseId = [body('id').custom(validateObjectId)]
+export const patientValidators = {
+  validatePatient,
+  validateFamilyMembers,
+  validateFamilyMember,
+  validateMongooseId,
+}
