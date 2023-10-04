@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import IPatient from './patient.interface'
+import IPatient, { IFamilyMember } from './patient.interface'
 import Patient from './patient.model'
 import User from '../user/user.model'
 
@@ -43,12 +43,32 @@ const updatePatientProfile = async (phoneNo: string, updateObj: IPatient) => {
 }
 const getPatientProfile = async (phoneNo: string) => {
   const user = await User.findOne({ phoneNo })
-  console.log(user)
   const result = await Patient.findById(user?.userId)
   return result
+}
+const addFamilyMembers = async (
+  phoneNo: string,
+  familyMembers: IFamilyMember[],
+) => {
+  const user = await User.findOne({ phoneNo })
+  const updatedPatient = await Patient.updateOne(
+    {
+      _id: user?.userId,
+    },
+    {
+      $push: {
+        familyMembers: {
+          $each: familyMembers,
+        },
+      },
+    },
+    { new: true },
+  )
+  return updatedPatient
 }
 export const patientServices = {
   createPatientService,
   updatePatientProfile,
   getPatientProfile,
+  addFamilyMembers,
 }

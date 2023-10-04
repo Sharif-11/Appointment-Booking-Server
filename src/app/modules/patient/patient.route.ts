@@ -4,6 +4,7 @@ import { bookingControllers } from './booking/booking.controller'
 import { appointmentControllers } from '../doctor/appointment/appointment.controller'
 import { patientControllers } from './patient.controller'
 import { patientValidators } from './patient.validator'
+import handleValidationError from '../../middlewares/req.validator'
 
 const patientRoutes = express.Router()
 patientRoutes.use(
@@ -20,6 +21,12 @@ patientRoutes.patch(
   '/profile',
   patientValidators.validatePatient,
   patientControllers.updatedPatientController,
+)
+patientRoutes.patch(
+  '/family-members',
+  patientValidators.validateFamilyMembers,
+  handleValidationError,
+  patientControllers.addFamilyMembersController,
 )
 patientRoutes.get(
   '/profile',

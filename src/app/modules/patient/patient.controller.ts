@@ -53,8 +53,27 @@ const getPatientProfileController: RequestHandler = async (req, res) => {
     })
   }
 }
+const addFamilyMembersController: RequestHandler = async (req, res) => {
+  try {
+    const { phoneNo } = req.decoded
+    const { familyMembers } = req.body
+    const data = await patientServices.addFamilyMembers(phoneNo, familyMembers)
+    res.status(200).json({
+      status: true,
+      message: 'family members are added successfully',
+      data,
+    })
+  } catch (error) {
+    res.status(500).json({
+      status: false,
+      message: 'family members adding failed',
+      errors: [error.message],
+    })
+  }
+}
 export const patientControllers = {
   createPatientController,
   updatedPatientController,
   getPatientProfileController,
+  addFamilyMembersController,
 }

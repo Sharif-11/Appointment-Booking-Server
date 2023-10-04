@@ -1,6 +1,6 @@
 import handleValidationError from '../../middlewares/req.validator'
 
-import { body } from 'express-validator'
+import { body, check } from 'express-validator'
 
 const allowedProperties = ['name', 'dateOfBirth', 'email']
 
@@ -29,4 +29,15 @@ const validatePatient = [
   body('email').optional().isEmail().withMessage('Invalid email address'),
   handleValidationError,
 ]
-export const patientValidators = { validatePatient }
+const validateFamilyMembers = [
+  check('familyMembers')
+    .isArray()
+    .withMessage('Family members must be an array'),
+  check('familyMembers.*.name')
+    .isString()
+    .withMessage('Name must be a string for all family members'),
+  check('familyMembers.*.dateOfBirth')
+    .isDate({ format: 'YYYY-MM-DD' })
+    .withMessage('Date of birth must be a valid date'),
+]
+export const patientValidators = { validatePatient, validateFamilyMembers }

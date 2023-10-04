@@ -1,7 +1,7 @@
 import { Model } from 'mongoose'
 
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
-interface IFamilyMember {
+export interface IFamilyMember {
   name: string
   dateOfBirth: string // You can use a Date object if needed
 }
