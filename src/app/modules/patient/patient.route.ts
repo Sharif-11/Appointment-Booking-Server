@@ -29,6 +29,10 @@ patientRoutes.patch(
   patientControllers.addFamilyMembersController,
 )
 patientRoutes.get(
+  '/family-members',
+  patientControllers.getFamilyMembersController,
+)
+patientRoutes.get(
   '/profile',
 
   patientControllers.getPatientProfileController,

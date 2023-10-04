@@ -66,9 +66,15 @@ const addFamilyMembers = async (
   )
   return updatedPatient
 }
+const getFamilyMembers = async (phoneNo: string) => {
+  const user = await User.findOne({ phoneNo })
+  const result = await Patient.findById(user?.userId).select('familyMembers')
+  return result
+}
 export const patientServices = {
   createPatientService,
   updatePatientProfile,
   getPatientProfile,
   addFamilyMembers,
+  getFamilyMembers,
 }

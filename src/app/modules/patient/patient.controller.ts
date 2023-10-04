@@ -71,9 +71,26 @@ const addFamilyMembersController: RequestHandler = async (req, res) => {
     })
   }
 }
+const getFamilyMembersController: RequestHandler = async (req, res) => {
+  try {
+    const { phoneNo } = req.decoded
+    const data = await patientServices.getFamilyMembers(phoneNo)
+    res.status(200).json({
+      status: true,
+      message: 'family members found successfully',
+      data,
+    })
+  } catch (error) {
+    res.status(500).json({
+      status: false,
+      message: 'family members retreiving failed',
+    })
+  }
+}
 export const patientControllers = {
   createPatientController,
   updatedPatientController,
   getPatientProfileController,
   addFamilyMembersController,
+  getFamilyMembersController,
 }
