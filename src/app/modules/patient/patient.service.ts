@@ -30,5 +30,25 @@ const createPatientService = async userData => {
     throw error
   }
 }
-
-export const patientServices = { createPatientService }
+const updatePatientProfile = async (phoneNo: string, updateObj: IPatient) => {
+  const user = await User.findOne({ phoneNo })
+  const updatedPatient = await Patient.findByIdAndUpdate(
+    user?.userId,
+    {
+      $set: updateObj,
+    },
+    { new: true },
+  )
+  return updatedPatient
+}
+const getPatientProfile = async (phoneNo: string) => {
+  const user = await User.findOne({ phoneNo })
+  console.log(user)
+  const result = await Patient.findById(user?.userId)
+  return result
+}
+export const patientServices = {
+  createPatientService,
+  updatePatientProfile,
+  getPatientProfile,
+}

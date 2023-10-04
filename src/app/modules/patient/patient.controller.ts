@@ -18,7 +18,46 @@ const createPatientController: RequestHandler = async (req, res) => {
       }),
     )
 }
-
+const updatedPatientController: RequestHandler = async (req, res) => {
+  try {
+    const { updateValue } = req.body
+    const { phoneNo } = req.decoded
+    const data = await patientServices.updatePatientProfile(
+      phoneNo,
+      updateValue,
+    )
+    res.status(200).json({
+      status: true,
+      message: 'patient update successfully',
+      data,
+    })
+  } catch (error) {
+    res.status(500).json({
+      status: false,
+      message: 'patient update failed',
+      errors: [error.message],
+    })
+  }
+}
+const getPatientProfileController: RequestHandler = async (req, res) => {
+  try {
+    const { phoneNo } = req.decoded
+    const data = await patientServices.getPatientProfile(phoneNo)
+    res.status(200).json({
+      status: true,
+      message: 'patient profile retreiving successull',
+      data,
+    })
+  } catch (error) {
+    res.status(500).json({
+      status: false,
+      message: 'patient profile finding failed',
+      errors: [error.message],
+    })
+  }
+}
 export const patientControllers = {
   createPatientController,
+  updatedPatientController,
+  getPatientProfileController,
 }
