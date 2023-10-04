@@ -33,5 +33,9 @@ doctorRoutes.delete(
   '/appointment/:id',
   appointmentControllers.deleteAppointmentController,
 )
+doctorRoutes.get(
+  '/appointments',
+  appointmentControllers.getAppointmentsController,
+)
 //doctorRoutes.put('/slot/:id', slotControllers.updateSlotController)
 export default doctorRoutes

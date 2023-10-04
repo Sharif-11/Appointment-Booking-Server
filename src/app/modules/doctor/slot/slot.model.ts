@@ -3,49 +3,55 @@ import ISlot from './slot.interface'
 import { SlotModel } from './slot.interface'
 import { slotUtilityFuntions } from './slot.utils'
 
-const slotSchema = new Schema<ISlot>({
-  weekDay: {
-    type: String,
-    enum: [
-      'Sunday',
-      'Monday',
-      'Tuesday',
-      'Wednesday',
-      'Thursday',
-      'Friday',
-      'Saturday',
-    ],
-    required: true,
+const slotSchema = new Schema<ISlot>(
+  {
+    weekDay: {
+      type: String,
+      enum: [
+        'Sunday',
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday',
+      ],
+      required: true,
+    },
+    startTime: {
+      type: String,
+      required: true,
+    },
+    endTime: {
+      type: String,
+      required: true,
+    },
+    bookingStartTime: {
+      type: String,
+      required: true,
+    },
+    bookingEndTime: {
+      type: String,
+      required: true,
+    },
+    capacity: {
+      type: Number,
+      required: true,
+      min: 5,
+      max: 250,
+    },
+    visitingFee: {
+      type: Number,
+      required: true,
+      min: 100,
+      max: 2000,
+    },
   },
-  startTime: {
-    type: String,
-    required: true,
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
   },
-  endTime: {
-    type: String,
-    required: true,
-  },
-  bookingStartTime: {
-    type: String,
-    required: true,
-  },
-  bookingEndTime: {
-    type: String,
-    required: true,
-  },
-  capacity: {
-    type: Number,
-    required: true,
-    min: 5,
-    max: 250,
-  },
-  visitingFee: {
-    type: Number,
-    required: true,
-    min: 100,
-    max: 2000,
-  },
-})
+)
 
 // Define a pre-save hook to check for overlapping slots
 slotSchema.pre('save', async function (next) {

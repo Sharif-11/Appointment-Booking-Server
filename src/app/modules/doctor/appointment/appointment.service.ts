@@ -122,9 +122,16 @@ const deleteAppoinment = async (id: string) => {
     return result
   }
 }
+const getAppointments = async () => {
+  const appointments = await Appointment.find({}).sort({
+    createdAt: -1,
+  })
+  return appointments
+}
 export const appointmentServices = {
   createAppointment,
   startAppointment,
   closeAppointment,
   deleteAppoinment,
+  getAppointments,
 }
