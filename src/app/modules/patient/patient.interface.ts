@@ -12,5 +12,10 @@ interface IPatient {
   email: string
   familyMembers: IFamilyMember[]
 }
+export interface IPatientWithoutFamilyMembersOptional {
+  name?: string
+  dateOfBirth?: string
+  email?: string
+}
 export type PatientModel = Model<IPatient, Record<string, unknown>>
 export default IPatient

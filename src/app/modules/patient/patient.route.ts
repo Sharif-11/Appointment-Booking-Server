@@ -3,6 +3,7 @@ import { authMiddlewares } from '../../middlewares/auth.middleware'
 import { bookingControllers } from './booking/booking.controller'
 import { appointmentControllers } from '../doctor/appointment/appointment.controller'
 import { patientControllers } from './patient.controller'
+import { patientValidators } from './patient.validator'
 
 const patientRoutes = express.Router()
 patientRoutes.use(
@@ -15,6 +16,14 @@ patientRoutes.get(
   '/appointments',
   appointmentControllers.getUpcomingAppointmentsController,
 )
-patientRoutes.patch('/profile', patientControllers.updatedPatientController)
-patientRoutes.get('/profile', patientControllers.getPatientProfileController)
+patientRoutes.patch(
+  '/profile',
+  patientValidators.validatePatient,
+  patientControllers.updatedPatientController,
+)
+patientRoutes.get(
+  '/profile',
+
+  patientControllers.getPatientProfileController,
+)
 export default patientRoutes

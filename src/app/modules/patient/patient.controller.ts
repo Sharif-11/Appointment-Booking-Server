@@ -20,12 +20,9 @@ const createPatientController: RequestHandler = async (req, res) => {
 }
 const updatedPatientController: RequestHandler = async (req, res) => {
   try {
-    const { updateValue } = req.body
     const { phoneNo } = req.decoded
-    const data = await patientServices.updatePatientProfile(
-      phoneNo,
-      updateValue,
-    )
+    const { familyMembers, ...otherData } = req.body
+    const data = await patientServices.updatePatientProfile(phoneNo, otherData)
     res.status(200).json({
       status: true,
       message: 'patient update successfully',
