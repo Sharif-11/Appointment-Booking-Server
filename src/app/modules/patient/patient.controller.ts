@@ -121,6 +121,23 @@ const getDoctorProfileController: RequestHandler = async (req, res) => {
     })
   }
 }
+const getSlotsController: RequestHandler = async (req, res) => {
+  try {
+    const { weekDay } = req.body
+    const data = await patientServices.getSlots(weekDay)
+    res.status(200).json({
+      status: true,
+      message: 'slots retreived successfully',
+      data,
+    })
+  } catch (error) {
+    res.status(500).json({
+      status: false,
+      message: 'slots retreiving failed',
+      errors: [error.message],
+    })
+  }
+}
 export const patientControllers = {
   createPatientController,
   updatedPatientController,
@@ -129,4 +146,5 @@ export const patientControllers = {
   getFamilyMembersController,
   removeFamilyMemberController,
   getDoctorProfileController,
+  getSlotsController,
 }

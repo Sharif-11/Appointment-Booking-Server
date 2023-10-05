@@ -43,4 +43,5 @@ patientRoutes.get(
   patientControllers.getPatientProfileController,
 )
 patientRoutes.get('/doctor-info', patientControllers.getDoctorProfileController)
+patientRoutes.get('/slots', patientControllers.getSlotsController)
 export default patientRoutes

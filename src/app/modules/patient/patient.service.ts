@@ -3,6 +3,7 @@ import IPatient, { IFamilyMember } from './patient.interface'
 import Patient from './patient.model'
 import User from '../user/user.model'
 import Doctor from '../doctor/doctor.model'
+import Slot from '../doctor/slot/slot.model'
 
 const createPatientService = async userData => {
   const role = 'patient'
@@ -93,6 +94,10 @@ const getDoctorProfile = async () => {
   const doctor = Doctor.findOne({}).select('-_id')
   return doctor
 }
+const getSlots = async (weekDay: string) => {
+  const result = await Slot.find({ weekDay })
+  return result
+}
 export const patientServices = {
   createPatientService,
   updatePatientProfile,
@@ -101,4 +106,5 @@ export const patientServices = {
   getFamilyMembers,
   removeFamilyMember,
   getDoctorProfile,
+  getSlots,
 }
