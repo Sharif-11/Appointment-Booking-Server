@@ -1,53 +1,25 @@
 import mongoose from 'mongoose'
 import handleValidationError from '../../middlewares/req.validator'
-
-import { body, check } from 'express-validator'
-
-const allowedProperties = ['name', 'dateOfBirth', 'email']
-
-// Create a custom validation rule to check for additional properties
-const checkForAdditionalProperties = (value, { req }) => {
-  const additionalProperties = Object.keys(req.body).filter(
-    prop => !allowedProperties.includes(prop),
-  )
-
-  if (additionalProperties.length > 0) {
-    throw new Error(
-      `Additional properties found: ${additionalProperties.join(', ')}`,
-    )
-  }
-
-  return true
-}
+import { body } from 'express-validator'
 
 const validatePatient = [
-  body().custom(checkForAdditionalProperties),
-  body('name').optional().isString().withMessage('Name must be a string'),
+  body('name').notEmpty().withMessage('Name is required'),
+  body('email')
+    .isEmail()
+    .withMessage('Invalid email address')
+    .notEmpty()
+    .withMessage('Email is required'),
   body('dateOfBirth')
-    .optional()
+    .notEmpty()
+    .withMessage('Date of Birth is required')
     .isDate({ format: 'YYYY-MM-DD' })
-    .withMessage('Date of birth must be in YYYY-MM-DD format'),
-  body('email').optional().isEmail().withMessage('Invalid email address'),
+    .withMessage('date must be in yyyy-mm-dd format'),
+  body('gender')
+    .isIn(['male', 'female', 'others'])
+    .withMessage('Invalid gender'),
   handleValidationError,
 ]
-const validateFamilyMembers = [
-  check('familyMembers')
-    .isArray()
-    .withMessage('Family members must be an array'),
-  check('familyMembers.*.name')
-    .isString()
-    .withMessage('Name must be a string for all family members'),
-  check('familyMembers.*.dateOfBirth')
-    .isDate({ format: 'YYYY-MM-DD' })
-    .withMessage('Date of birth must be a valid date'),
-]
-const validateFamilyMember = [
-  body('name').isString().withMessage('Name must be a string'),
-  body('dateOfBirth')
-    .isDate({ format: 'YYYY-MM-DD' })
-    .withMessage('Date of birth must be a valid date'),
-  handleValidationError,
-]
+
 const validateObjectId = value => {
   if (!mongoose.Types.ObjectId.isValid(value)) {
     throw new Error('Invalid ObjectId')
@@ -58,7 +30,5 @@ const validateObjectId = value => {
 const validateMongooseId = [body('id').custom(validateObjectId)]
 export const patientValidators = {
   validatePatient,
-  validateFamilyMembers,
-  validateFamilyMember,
   validateMongooseId,
 }

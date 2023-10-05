@@ -51,25 +51,26 @@ const deleteSlotController: RequestHandler = async (req, res, next) => {
     })
   }
 }
-// const updateSlotController: RequestHandler = async (req, res, next) => {
-//   try {
-//     const { id } = req.params
-//     const updatedSlot = await slotServices.updateSlot(id, req.body)
-//     res.status(200).json({
-//       status: true,
-//       message: 'slot update successful',
-//       data: updatedSlot._id,
-//     })
-//   } catch (error) {
-//     res.status(500).json({
-//       status: false,
-//       message: 'slot update failed',
-//       errors: [error?.message],
-//     })
-//   }
-// }
+const getSlotsOfDayController: RequestHandler = async (req, res) => {
+  try {
+    const { weekDay } = req.body
+    const data = await slotServices.getSlots(weekDay)
+    res.status(200).json({
+      status: true,
+      message: 'slots retreived successfully',
+      data,
+    })
+  } catch (error) {
+    res.status(500).json({
+      status: false,
+      message: 'slots retreiving failed',
+      errors: [error.message],
+    })
+  }
+}
 export const slotControllers = {
   createSlotController,
   getSlotsController,
   deleteSlotController,
+  getSlotsOfDayController,
 }

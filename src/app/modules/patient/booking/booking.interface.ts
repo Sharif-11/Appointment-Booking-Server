@@ -3,7 +3,7 @@ import { Model, Schema } from 'mongoose'
 
 interface IBooking {
   appointmentId: Schema.Types.ObjectId
-  userId: Schema.Types.ObjectId
+  patientId: Schema.Types.ObjectId
   paymentId?: Schema.Types.ObjectId
   problemDescription?: string
   paymentStatus: 'paid' | 'unpaid'

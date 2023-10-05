@@ -3,10 +3,11 @@ import Appointment from '../../doctor/appointment/appointment.model'
 import { daysOfWeek } from '../../doctor/doctor.constant'
 import User from '../../user/user.model'
 import Booking from './booking.model'
+import Patient from '../patient.model'
 
 const createBooking = async (
   appointmentId: string,
-  phoneNo: string,
+  patientId: string,
   problemDescription?: string,
 ) => {
   const currentDate = new Date()
@@ -14,6 +15,10 @@ const createBooking = async (
   const appointment = await Appointment.findById(appointmentId)
   if (!appointment) {
     throw new Error("Appointment with this id doesn't exist")
+  }
+  const patient = await Patient.findById(patientId)
+  if (!patient) {
+    throw new Error('Patient with this id does not exist')
   }
 
   const appointmentDay = daysOfWeek[new Date(appointment.date).getDay()]
@@ -24,16 +29,13 @@ const createBooking = async (
   ) {
     throw new Error(`You can't book a slot for this appointment`)
   }
-  const user = await User.findOne({ phoneNo })
-  if (!user) {
-    throw new Error('This is not a valid user')
-  }
-  const existedBooking = await Booking.findOne({ userId: user._id })
+
+  const existedBooking = await Booking.findOne({ patientId, appointmentId })
   if (existedBooking) {
     throw new Error('You already booked a slot')
   }
   const bookingInfo = {
-    userId: user._id,
+    patientId,
     appointmentId: appointment._id,
     problemDescription,
     paymentStatus: 'unpaid',

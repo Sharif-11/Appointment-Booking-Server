@@ -4,12 +4,11 @@ import Success, { responseUtility } from '../../response/response.utils'
 
 const createBookingController: RequestHandler = async (req, res) => {
   try {
-    const { phoneNo } = req.decoded
-    const { problemDescription } = req.body
+    const { problemDescription, patientId } = req.body
     const { id } = req.params
     const { data, appointment } = await bookingServices.createBooking(
       id,
-      phoneNo,
+      patientId,
       problemDescription,
     )
     res.status(200).json({

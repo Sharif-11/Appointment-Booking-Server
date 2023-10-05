@@ -1,16 +1,14 @@
 import mongoose from 'mongoose'
-import IPatient, { IFamilyMember } from './patient.interface'
+import IPatient from './patient.interface'
 import Patient from './patient.model'
 import User from '../user/user.model'
 import Doctor from '../doctor/doctor.model'
-import Slot from '../doctor/slot/slot.model'
 
 const createPatientService = async userData => {
   const role = 'patient'
-  const { name, email, phoneNo, password, dateOfBirth, familyMembers } =
-    userData
+  const { name, email, phoneNo, password, dateOfBirth } = userData
   const user = { phoneNo, password, role }
-  const patient: IPatient = { name, email, dateOfBirth, familyMembers }
+  const patient: IPatient = { name, email, dateOfBirth }
   const session = await mongoose.startSession()
   try {
     session.startTransaction()
@@ -48,63 +46,15 @@ const getPatientProfile = async (phoneNo: string) => {
   const result = await Patient.findById(user?.userId)
   return result
 }
-const addFamilyMembers = async (
-  phoneNo: string,
-  familyMembers: IFamilyMember[],
-) => {
-  const user = await User.findOne({ phoneNo })
-  const updatedPatient = await Patient.updateOne(
-    {
-      _id: user?.userId,
-    },
-    {
-      $push: {
-        familyMembers: {
-          $each: familyMembers,
-        },
-      },
-    },
-    { new: true },
-  )
-  return updatedPatient
-}
-const getFamilyMembers = async (phoneNo: string) => {
-  const user = await User.findOne({ phoneNo })
-  const result = await Patient.findById(user?.userId).select('familyMembers')
-  return result
-}
-const removeFamilyMember = async (phoneNo: string, memberId: string) => {
-  const user = await User.findOne({ phoneNo })
-  const result = await Patient.updateOne(
-    {
-      _id: user?.userId,
-    },
-    {
-      $pull: {
-        familyMembers: {
-          _id: memberId,
-        },
-      },
-    },
-    { new: true },
-  )
-  return result
-}
+
 const getDoctorProfile = async () => {
   const doctor = Doctor.findOne({}).select('-_id')
   return doctor
 }
-const getSlots = async (weekDay: string) => {
-  const result = await Slot.find({ weekDay })
-  return result
-}
+
 export const patientServices = {
   createPatientService,
   updatePatientProfile,
   getPatientProfile,
-  addFamilyMembers,
-  getFamilyMembers,
-  removeFamilyMember,
   getDoctorProfile,
-  getSlots,
 }

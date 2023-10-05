@@ -40,12 +40,12 @@ userSchema.pre('save', async function (next) {
   )
   const existedUser = await User.findOne({ phoneNo: user.phoneNo })
   if (existedUser) {
-    next('Phone number already in use')
+    throw new Error('Phone number already in use')
   } else {
     next()
   }
 })
 
-const User = model<IUser, UserModel>('user', userSchema)
+const User = model<IUser, UserModel>('User', userSchema)
 
 export default User

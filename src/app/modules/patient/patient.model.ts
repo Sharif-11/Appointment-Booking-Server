@@ -15,24 +15,16 @@ const patientSchema = new Schema<IPatient>(
       type: String,
       required: true,
     },
-    familyMembers: [
-      {
-        name: {
-          type: String,
-          required: true,
-        },
-        dateOfBirth: {
-          type: String,
-          required: true,
-        },
-      },
-    ],
+    gender: {
+      type: String,
+      enum: ['male', 'female', 'others'],
+    },
   },
   {
     timestamps: true,
     toJSON: { virtuals: true },
   },
 )
-const Patient = model<IPatient, PatientModel>('patient', patientSchema)
+const Patient = model<IPatient, PatientModel>('Patient', patientSchema)
 
 export default Patient

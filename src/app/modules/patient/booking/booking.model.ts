@@ -8,14 +8,18 @@ const bookingSchema = new Schema<IBooking>({
     ref: 'Appointment', // Replace 'Appointment' with the actual name of your Appointment model
     required: true,
   },
-  userId: {
+  patientId: {
     type: mongoose.Types.ObjectId,
     required: true,
-    ref: 'User',
+    ref: 'Patient',
   },
   paymentId: {
     type: mongoose.Types.ObjectId,
     ref: 'Payment',
+  },
+  memberId: {
+    type: mongoose.Types.ObjectId,
+    ref: 'Patient.familyMembers',
   },
   problemDescription: {
     type: String,
@@ -31,5 +35,5 @@ const bookingSchema = new Schema<IBooking>({
     required: true,
   },
 })
-const Booking = model<IBooking, BookingModel>('booking', bookingSchema)
+const Booking = model<IBooking, BookingModel>('Booking', bookingSchema)
 export default Booking

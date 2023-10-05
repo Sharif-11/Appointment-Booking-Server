@@ -15,26 +15,8 @@ const deleteSlot = async (id: string) => {
   const deletedSlot = await Slot.findByIdAndDelete(id)
   return deletedSlot
 }
-// const updateSlot = async (id: string, updateObject: ISlot) => {
-//   const session = await mongoose.startSession()
-//   const errorMessage = 'Slot update failed'
-//   try {
-//     await session.startTransaction()
-//     const deletedSlot = await Slot.findByIdAndDelete(id, { session })
-//     if (!deletedSlot) {
-//       throw new Error(errorMessage)
-//     }
-//     const newSlot = await Slot.create([updateObject], { session })
-//     if (!newSlot.length) {
-//       throw new Error(errorMessage)
-//     }
-//     await session.commitTransaction()
-//     await session.endSession()
-//     return newSlot[0]
-//   } catch (error) {
-//     await session.abortTransaction()
-//     await session.endSession()
-//     throw error
-//   }
-// }
-export const slotServices = { createSlot, getAllSlot, deleteSlot }
+const getSlots = async (weekDay: string) => {
+  const result = await Slot.find({ weekDay })
+  return result
+}
+export const slotServices = { createSlot, getAllSlot, deleteSlot, getSlots }

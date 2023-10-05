@@ -4,7 +4,8 @@ import { bookingControllers } from './booking/booking.controller'
 import { appointmentControllers } from '../doctor/appointment/appointment.controller'
 import { patientControllers } from './patient.controller'
 import { patientValidators } from './patient.validator'
-import handleValidationError from '../../middlewares/req.validator'
+import { slotControllers } from '../doctor/slot/slot.controller'
+import { patientQueueControllers } from '../patient-queue/patientQueue.controller'
 
 const patientRoutes = express.Router()
 patientRoutes.use(
@@ -22,26 +23,16 @@ patientRoutes.patch(
   patientValidators.validatePatient,
   patientControllers.updatedPatientController,
 )
-patientRoutes.patch(
-  '/family-members',
-  patientValidators.validateFamilyMembers,
-  handleValidationError,
-  patientControllers.addFamilyMembersController,
-)
-patientRoutes.get(
-  '/family-members',
-  patientControllers.getFamilyMembersController,
-)
-patientRoutes.patch(
-  '/remove-member',
-  patientValidators.validateMongooseId,
-  patientControllers.removeFamilyMemberController,
-)
+
 patientRoutes.get(
   '/profile',
 
   patientControllers.getPatientProfileController,
 )
 patientRoutes.get('/doctor-info', patientControllers.getDoctorProfileController)
-patientRoutes.get('/slots', patientControllers.getSlotsController)
+patientRoutes.get('/slots', slotControllers.getSlotsOfDayController)
+patientRoutes.get(
+  '/patient-queue/:id',
+  patientQueueControllers.getQueuedPatientController,
+)
 export default patientRoutes

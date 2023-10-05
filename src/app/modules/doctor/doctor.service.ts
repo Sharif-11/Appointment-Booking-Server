@@ -5,6 +5,7 @@ import User from '../user/user.model'
 const createDoctorService = async userData => {
   const role = 'doctor'
   const { phoneNo, password, ...doctor } = userData
+  console.log({ doctor })
   const user = { phoneNo, password, role }
   const session = await mongoose.startSession()
   try {

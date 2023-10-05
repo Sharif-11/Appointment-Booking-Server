@@ -32,7 +32,11 @@ const validatePatient = [
     .withMessage('Password must be at least 6 characters long')
     .notEmpty()
     .withMessage('Password is required'),
-  body('dateOfBirth').notEmpty().withMessage('Date of birth is required'),
+  body('dateOfBirth')
+    .notEmpty()
+    .withMessage('Date of birth is required')
+    .isDate({ format: 'YYYY-MM-DD' })
+    .withMessage('date must be in yyyy-mm-dd format'),
   handleValidationError,
 ]
 

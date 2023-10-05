@@ -21,8 +21,7 @@ const createPatientController: RequestHandler = async (req, res) => {
 const updatedPatientController: RequestHandler = async (req, res) => {
   try {
     const { phoneNo } = req.decoded
-    const { familyMembers, ...otherData } = req.body
-    const data = await patientServices.updatePatientProfile(phoneNo, otherData)
+    const data = await patientServices.updatePatientProfile(phoneNo, req.body)
     res.status(200).json({
       status: true,
       message: 'patient update successfully',
@@ -53,58 +52,7 @@ const getPatientProfileController: RequestHandler = async (req, res) => {
     })
   }
 }
-const addFamilyMembersController: RequestHandler = async (req, res) => {
-  try {
-    const { phoneNo } = req.decoded
-    const { familyMembers } = req.body
-    const data = await patientServices.addFamilyMembers(phoneNo, familyMembers)
-    res.status(200).json({
-      status: true,
-      message: 'family members are added successfully',
-      data,
-    })
-  } catch (error) {
-    res.status(500).json({
-      status: false,
-      message: 'family members adding failed',
-      errors: [error.message],
-    })
-  }
-}
-const getFamilyMembersController: RequestHandler = async (req, res) => {
-  try {
-    const { phoneNo } = req.decoded
-    const data = await patientServices.getFamilyMembers(phoneNo)
-    res.status(200).json({
-      status: true,
-      message: 'family members found successfully',
-      data,
-    })
-  } catch (error) {
-    res.status(500).json({
-      status: false,
-      message: 'family members retreiving failed',
-    })
-  }
-}
-const removeFamilyMemberController: RequestHandler = async (req, res) => {
-  try {
-    const { phoneNo } = req.decoded
-    const { id } = req.body
-    const data = await patientServices.removeFamilyMember(phoneNo, id)
-    res.status(200).json({
-      status: true,
-      message: 'family member removed successfully',
-      data,
-    })
-  } catch (error) {
-    res.status(500).json({
-      status: false,
-      message: 'family member deletion failed',
-      errors: [error.message],
-    })
-  }
-}
+
 const getDoctorProfileController: RequestHandler = async (req, res) => {
   try {
     const data = await patientServices.getDoctorProfile()
@@ -121,30 +69,10 @@ const getDoctorProfileController: RequestHandler = async (req, res) => {
     })
   }
 }
-const getSlotsController: RequestHandler = async (req, res) => {
-  try {
-    const { weekDay } = req.body
-    const data = await patientServices.getSlots(weekDay)
-    res.status(200).json({
-      status: true,
-      message: 'slots retreived successfully',
-      data,
-    })
-  } catch (error) {
-    res.status(500).json({
-      status: false,
-      message: 'slots retreiving failed',
-      errors: [error.message],
-    })
-  }
-}
+
 export const patientControllers = {
   createPatientController,
   updatedPatientController,
   getPatientProfileController,
-  addFamilyMembersController,
-  getFamilyMembersController,
-  removeFamilyMemberController,
   getDoctorProfileController,
-  getSlotsController,
 }
