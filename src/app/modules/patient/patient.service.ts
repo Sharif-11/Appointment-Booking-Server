@@ -2,6 +2,7 @@ import mongoose from 'mongoose'
 import IPatient, { IFamilyMember } from './patient.interface'
 import Patient from './patient.model'
 import User from '../user/user.model'
+import Doctor from '../doctor/doctor.model'
 
 const createPatientService = async userData => {
   const role = 'patient'
@@ -88,6 +89,10 @@ const removeFamilyMember = async (phoneNo: string, memberId: string) => {
   )
   return result
 }
+const getDoctorProfile = async () => {
+  const doctor = Doctor.findOne({}).select('-_id')
+  return doctor
+}
 export const patientServices = {
   createPatientService,
   updatePatientProfile,
@@ -95,4 +100,5 @@ export const patientServices = {
   addFamilyMembers,
   getFamilyMembers,
   removeFamilyMember,
+  getDoctorProfile,
 }

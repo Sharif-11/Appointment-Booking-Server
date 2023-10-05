@@ -15,6 +15,12 @@ const doctorSchema = new Schema<IDoctor>(
       type: String,
       required: true,
     },
+    aboutMe: {
+      type: String,
+      required: true,
+      minlength: 10,
+      maxlength: 125,
+    },
     academicQualifications: [
       {
         degree: {
@@ -22,6 +28,14 @@ const doctorSchema = new Schema<IDoctor>(
           required: true,
         },
         institute: {
+          type: String,
+          required: true,
+        },
+        startTime: {
+          type: String,
+          required: true,
+        },
+        endTime: {
           type: String,
           required: true,
         },
@@ -34,8 +48,7 @@ const doctorSchema = new Schema<IDoctor>(
   },
 )
 doctorSchema.pre('save', async function (next) {
-  const doctor = await this.constructor.findOne({})
-  console.log('doctor==', doctor)
+  const doctor = await Doctor.findOne({})
   if (!doctor) next()
   else {
     throw new Error('Doctor already exists')

@@ -105,6 +105,22 @@ const removeFamilyMemberController: RequestHandler = async (req, res) => {
     })
   }
 }
+const getDoctorProfileController: RequestHandler = async (req, res) => {
+  try {
+    const data = await patientServices.getDoctorProfile()
+    res.status(200).json({
+      status: true,
+      message: 'doctor profile retreived successfully',
+      data,
+    })
+  } catch (error) {
+    res.status(500).json({
+      status: false,
+      message: 'doctor profile retreiving failed',
+      errors: [error.message],
+    })
+  }
+}
 export const patientControllers = {
   createPatientController,
   updatedPatientController,
@@ -112,4 +128,5 @@ export const patientControllers = {
   addFamilyMembersController,
   getFamilyMembersController,
   removeFamilyMemberController,
+  getDoctorProfileController,
 }

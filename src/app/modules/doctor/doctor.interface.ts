@@ -5,10 +5,13 @@ interface IDoctor {
   name: string
   designation: string
   email: string
+  aboutMe: string
   academicQualifications?: [
     {
       degree: string
       institute: string
+      startTime: string
+      endTime: string
     },
   ]
 }
