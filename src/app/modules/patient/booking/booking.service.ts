@@ -80,8 +80,29 @@ const checkBooking = async (appointmentId: string, phoneNo: string) => {
   })
   return existedBooking
 }
+const updateBookingStatus = async (
+  bookingId: string,
+  status: 'pending' | 'in service' | 'waiting' | 'served',
+) => {
+  const result = await Booking.updateOne(
+    {
+      _id: bookingId,
+      serviceStatus: {
+        $in: ['waiting', 'in service'],
+      },
+    },
+    {
+      $set: { serviceStatus: status },
+    },
+    {
+      new: true,
+    },
+  )
+  return result
+}
 
 export const bookingServices = {
   createBooking,
   checkBooking,
+  updateBookingStatus,
 }

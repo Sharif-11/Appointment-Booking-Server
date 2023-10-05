@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express'
 import { bookingServices } from './booking.service'
-import Success, { responseUtility } from '../../response/response.utils'
+import { responseUtility } from '../../response/response.utils'
 
 const createBookingController: RequestHandler = async (req, res) => {
   try {
@@ -49,8 +49,27 @@ const checkBookingController: RequestHandler = async (req, res) => {
       )
   }
 }
+const updateBookingStatusController: RequestHandler = async (req, res) => {
+  try {
+    const { id } = req.params
+    const { serviceStatus } = req.body
+    const data = await bookingServices.updateBookingStatus(id, serviceStatus)
+    res.status(200).json({
+      status: true,
+      message: 'service status updated successfully',
+      data,
+    })
+  } catch (error) {
+    res.status(500).json({
+      status: false,
+      message: 'service status update failed',
+      errors: [error.message],
+    })
+  }
+}
 
 export const bookingControllers = {
   createBookingController,
   checkBookingController,
+  updateBookingStatusController,
 }
