@@ -7,6 +7,8 @@ import { appointmentControllers } from './appointment/appointment.controller'
 import { patientQueueControllers } from '../patient-queue/patientQueue.controller'
 import { bookingValidators } from '../patient/booking/booking.validator'
 import { bookingControllers } from '../patient/booking/booking.controller'
+import { doctorControllers } from './doctor.controller'
+import { doctorValidators } from './doctor.validator'
 const doctorRoutes = express.Router()
 doctorRoutes.use(
   authMiddlewares.verifyTokenMiddleware,
@@ -48,6 +50,11 @@ doctorRoutes.patch(
   '/booking/:id',
   bookingValidators.validateServiceStatus,
   bookingControllers.updateBookingStatusController,
+)
+doctorRoutes.put(
+  '/profile',
+  doctorValidators.updateDoctorValidation,
+  doctorControllers.updateDoctorController,
 )
 //doctorRoutes.put('/slot/:id', slotControllers.updateSlotController)
 export default doctorRoutes

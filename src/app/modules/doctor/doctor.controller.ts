@@ -13,4 +13,25 @@ const createDoctorController: RequestHandler = async (req, res) => {
       res.status(500).json({ status: false, message: err?.message })
     })
 }
-export const doctorControllers = { createDoctorController }
+const updateDoctorController: RequestHandler = async (req, res) => {
+  try {
+    const { phoneNo } = req.decoded
+
+    const data = await doctorServices.updateDoctorService(phoneNo, req.body)
+    res.status(200).json({
+      status: true,
+      message: 'doctor info updated successfully',
+      data,
+    })
+  } catch (error) {
+    res.status(500).json({
+      status: false,
+      message: 'doctor info update failed',
+      errors: [error.message],
+    })
+  }
+}
+export const doctorControllers = {
+  createDoctorController,
+  updateDoctorController,
+}

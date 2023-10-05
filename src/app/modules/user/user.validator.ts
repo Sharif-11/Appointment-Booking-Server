@@ -48,7 +48,11 @@ const validateDoctor = [
     .notEmpty()
     .withMessage('Email is required'),
   body('designation').notEmpty().withMessage('Designation is required'),
-  body('dateOfBirth').notEmpty().withMessage('Date of birth is required'),
+  body('dateOfBirth')
+    .notEmpty()
+    .withMessage('Date of birth is required')
+    .isDate({ format: 'YYYY-MM-DD' })
+    .withMessage('date of birth must be in yyyy-mm-dd format'),
   body('phoneNo').notEmpty().withMessage('Phone number is required'),
   body('password')
     .isLength({ min: 6 })

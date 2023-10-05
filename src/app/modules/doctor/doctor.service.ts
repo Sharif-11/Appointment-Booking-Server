@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 import Doctor from './doctor.model'
 import User from '../user/user.model'
+import IDoctor from './doctor.interface'
 
 const createDoctorService = async userData => {
   const role = 'doctor'
@@ -27,4 +28,16 @@ const createDoctorService = async userData => {
     throw error
   }
 }
-export const doctorServices = { createDoctorService }
+const updateDoctorService = async (phoneNo: string, updateObj: IDoctor) => {
+  const user = await User.findOne({ phoneNo })
+  console.log(user?.userId)
+  const result = await Doctor.findByIdAndUpdate(
+    user?.userId,
+    {
+      $set: updateObj,
+    },
+    { new: true },
+  )
+  return result
+}
+export const doctorServices = { createDoctorService, updateDoctorService }
