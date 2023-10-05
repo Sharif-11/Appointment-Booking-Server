@@ -17,10 +17,7 @@ const bookingSchema = new Schema<IBooking>({
     type: mongoose.Types.ObjectId,
     ref: 'Payment',
   },
-  memberId: {
-    type: mongoose.Types.ObjectId,
-    ref: 'Patient.familyMembers',
-  },
+
   problemDescription: {
     type: String,
   },

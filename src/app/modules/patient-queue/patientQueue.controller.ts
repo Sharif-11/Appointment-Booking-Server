@@ -4,7 +4,6 @@ import { patientQueueServices } from './patientQueue.service'
 const getQueuedPatientController: RequestHandler = async (req, res) => {
   try {
     const { id } = req.params
-    const { patientId } = req.body
     const data = await patientQueueServices.getQueuedPatient(id)
     res.status(200).json({
       status: true,
