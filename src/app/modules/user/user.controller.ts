@@ -19,11 +19,14 @@ const loginController: RequestHandler = async (req, res, next) => {
     })
       .populate('userId')
       .lean()
-    res.cookie('token', token, { httpOnly: true })
+    res.cookie('token', token, {
+      maxAge: 30 * 24 * 3600 * 1000,
+    })
+
     res.status(200).json({
       status: true,
       message: 'log in successful',
-      data: { ...others, ...userId },
+      data: { ...others, ...userId, token },
     })
   } catch (error) {
     res.status(401).json({
@@ -34,6 +37,7 @@ const loginController: RequestHandler = async (req, res, next) => {
 }
 const checkLoginController: RequestHandler = async (req, res, next) => {
   const token = req.cookies.token || req.headers.authorization?.split(' ')[1]
+  console.log({ token })
   if (token) {
     jwt.verify(token, config.jwt_secret as string, async (err, decoded) => {
       if (!err) {
