@@ -4,7 +4,7 @@ import { Model, Schema } from 'mongoose'
 interface IUser {
   phoneNo: string
   password: string
-  role: 'patient' | 'doctor' // You can extend this for other roles
+  role: 'Patient' | 'Doctor' // You can extend this for other roles
   userId: Schema.Types.ObjectId
 }
 export type UserModel = Model<IUser, Record<string, unknown>>

@@ -18,7 +18,7 @@ const patient_model_1 = __importDefault(require("./patient.model"));
 const user_model_1 = __importDefault(require("../user/user.model"));
 const doctor_model_1 = __importDefault(require("../doctor/doctor.model"));
 const createPatientService = (userData) => __awaiter(void 0, void 0, void 0, function* () {
-    const role = 'patient';
+    const role = 'Patient';
     const { name, email, phoneNo, password, dateOfBirth } = userData;
     const user = { phoneNo, password, role };
     const patient = { name, email, dateOfBirth };

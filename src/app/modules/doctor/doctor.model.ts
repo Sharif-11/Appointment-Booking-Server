@@ -54,5 +54,5 @@ doctorSchema.pre('save', async function (next) {
     throw new Error('Doctor already exists')
   }
 })
-const Doctor = model<IDoctor, DoctorModel>('doctor', doctorSchema)
+const Doctor = model<IDoctor, DoctorModel>('Doctor', doctorSchema)
 export default Doctor

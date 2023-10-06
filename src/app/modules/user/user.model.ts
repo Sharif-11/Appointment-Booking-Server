@@ -15,7 +15,7 @@ const userSchema = new Schema<IUser>(
     },
     role: {
       type: String,
-      enum: ['patient', 'doctor'],
+      enum: ['Patient', 'Doctor'],
       required: true,
     },
     userId: {

@@ -4,7 +4,7 @@ import User from '../user/user.model'
 import IDoctor from './doctor.interface'
 
 const createDoctorService = async userData => {
-  const role = 'doctor'
+  const role = 'Doctor'
   const { phoneNo, password, ...doctor } = userData
   console.log({ doctor })
   const user = { phoneNo, password, role }

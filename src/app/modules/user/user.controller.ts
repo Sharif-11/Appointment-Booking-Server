@@ -4,19 +4,26 @@ import bcrypt from 'bcrypt'
 import { userAuth } from './user.auth'
 import jwt from 'jsonwebtoken'
 import config from '../../../config'
+import User from './user.model'
 type Role = 'patient' | 'doctor'
 const loginController: RequestHandler = async (req, res, next) => {
   try {
-    const { phoneNo, password } = req.body
+    const { phoneNo } = req.body
     const user = await userServices.findUserByPhone(phoneNo)
-    if (!user || !bcrypt.compareSync(password, user.password)) {
-      throw new Error('Invalid credentials')
+    if (!user || !bcrypt.compareSync(req.body.password, user.password)) {
+      throw new Error('Phone number or password is wrong')
     }
     const token = await userAuth.createToken(phoneNo, user.role as Role)
+    const { password, userId, ...others } = await User.findOne({
+      phoneNo,
+    })
+      .populate('userId')
+      .lean()
+    res.cookie('token', token, { httpOnly: true })
     res.status(200).json({
       status: true,
       message: 'log in successful',
-      data: { token, user },
+      data: { ...others, ...userId },
     })
   } catch (error) {
     res.status(401).json({
@@ -26,16 +33,21 @@ const loginController: RequestHandler = async (req, res, next) => {
   }
 }
 const checkLoginController: RequestHandler = async (req, res, next) => {
-  const token = req.headers.authorization?.split(' ')[1]
+  const token = req.cookies.token || req.headers.authorization?.split(' ')[1]
   if (token) {
-    jwt.verify(token, config.jwt_secret as string, (err, decoded) => {
+    jwt.verify(token, config.jwt_secret as string, async (err, decoded) => {
       if (!err) {
+        const { phoneNo } = decoded
+        const { password, userId, ...others } = await User.findOne({
+          phoneNo,
+        })
+          .populate('userId')
+          .lean()
+
         res.status(200).json({
           status: true,
           message: 'already logged in',
-          data: {
-            user: decoded,
-          },
+          data: { ...userId, ...others },
         })
       } else {
         res.status(500).json({

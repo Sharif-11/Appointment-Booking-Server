@@ -5,7 +5,7 @@ import User from '../user/user.model'
 import Doctor from '../doctor/doctor.model'
 
 const createPatientService = async userData => {
-  const role = 'patient'
+  const role = 'Patient'
   const { name, email, phoneNo, password, dateOfBirth } = userData
   const user = { phoneNo, password, role }
   const patient: IPatient = { name, email, dateOfBirth }

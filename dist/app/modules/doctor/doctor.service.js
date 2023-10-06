@@ -28,7 +28,7 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const doctor_model_1 = __importDefault(require("./doctor.model"));
 const user_model_1 = __importDefault(require("../user/user.model"));
 const createDoctorService = (userData) => __awaiter(void 0, void 0, void 0, function* () {
-    const role = 'doctor';
+    const role = 'Doctor';
     const { phoneNo, password } = userData, doctor = __rest(userData, ["phoneNo", "password"]);
     console.log({ doctor });
     const user = { phoneNo, password, role };
