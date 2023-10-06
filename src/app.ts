@@ -1,8 +1,6 @@
 import express, { Application, Response, Request } from 'express'
 import cors from 'cors'
 import userRoutes from './app/modules/user/user.route'
-import User from './app/modules/user/user.model'
-import mongoose from 'mongoose'
 import globalErrorHandler from './app/errors/globalErroHandler'
 import doctorRoutes from './app/modules/doctor/doctor.route'
 import patientRoutes from './app/modules/patient/patient.route'
