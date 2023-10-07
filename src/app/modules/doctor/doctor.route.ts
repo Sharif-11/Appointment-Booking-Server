@@ -10,16 +10,16 @@ import { bookingControllers } from '../patient/booking/booking.controller'
 import { doctorControllers } from './doctor.controller'
 import { doctorValidators } from './doctor.validator'
 const doctorRoutes = express.Router()
-doctorRoutes.use(
-  authMiddlewares.verifyTokenMiddleware,
-  authMiddlewares.verifyUser('Doctor'),
-)
+// doctorRoutes.use(
+//   authMiddlewares.verifyTokenMiddleware,
+//   authMiddlewares.verifyUser('Doctor'),
+// )
 doctorRoutes.post(
   '/slot',
   slotValidators.validateSlot,
   slotControllers.createSlotController,
 )
-doctorRoutes.get('/slots', slotControllers.getSlotsController)
+doctorRoutes.post('/slots', slotControllers.getSlotsOfDayController)
 doctorRoutes.delete('/slot/:id', slotControllers.deleteSlotController)
 doctorRoutes.post(
   '/appointment',

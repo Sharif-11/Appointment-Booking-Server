@@ -54,6 +54,8 @@ const deleteSlotController: RequestHandler = async (req, res, next) => {
 const getSlotsOfDayController: RequestHandler = async (req, res) => {
   try {
     const { weekDay } = req.body
+    console.log(req.body)
+    console.log({ weekDay })
     const data = await slotServices.getSlots(weekDay)
     res.status(200).json({
       status: true,
