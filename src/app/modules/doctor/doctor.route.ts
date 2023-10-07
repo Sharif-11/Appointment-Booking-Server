@@ -12,7 +12,7 @@ import { doctorValidators } from './doctor.validator'
 const doctorRoutes = express.Router()
 doctorRoutes.use(
   authMiddlewares.verifyTokenMiddleware,
-  authMiddlewares.verifyUser('doctor'),
+  authMiddlewares.verifyUser('Doctor'),
 )
 doctorRoutes.post(
   '/slot',

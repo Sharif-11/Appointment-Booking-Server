@@ -10,7 +10,7 @@ import { patientQueueControllers } from '../patient-queue/patientQueue.controlle
 const patientRoutes = express.Router()
 patientRoutes.use(
   authMiddlewares.verifyTokenMiddleware,
-  authMiddlewares.verifyUser('patient'),
+  authMiddlewares.verifyUser('Patient'),
 )
 patientRoutes.post('/booking/:id', bookingControllers.createBookingController)
 patientRoutes.get('/booking/:id', bookingControllers.checkBookingController)
