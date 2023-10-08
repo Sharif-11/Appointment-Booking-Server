@@ -19,7 +19,7 @@ doctorRoutes.post(
   slotValidators.validateSlot,
   slotControllers.createSlotController,
 )
-doctorRoutes.get('/slots', slotControllers.getSlotsOfDayController)
+doctorRoutes.post('/slots', slotControllers.getSlotsOfDayController)
 doctorRoutes.delete('/slot/:id', slotControllers.deleteSlotController)
 doctorRoutes.post(
   '/appointment',
