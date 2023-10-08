@@ -6,10 +6,17 @@ import doctorRoutes from './app/modules/doctor/doctor.route'
 import patientRoutes from './app/modules/patient/patient.route'
 import cookieParser from 'cookie-parser'
 const app: Application = express()
-app.use(cors())
+
 app.use(express.json())
 app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }))
+app.use(
+  cors({
+    origin: 'http://localhost:5173',
+    allowedHeaders: ['Content-Type'],
+    credentials: true,
+  }),
+)
 app.use('/api/v1/user', userRoutes)
 app.use('/api/v1/doctor', doctorRoutes)
 app.use('/api/v1/patient', patientRoutes)

@@ -5,7 +5,7 @@ import { userAuth } from './user.auth'
 import jwt from 'jsonwebtoken'
 import config from '../../../config'
 import User from './user.model'
-type Role = 'patient' | 'doctor'
+type Role = 'Patient' | 'Doctor'
 const loginController: RequestHandler = async (req, res, next) => {
   try {
     const { phoneNo } = req.body
@@ -21,9 +21,10 @@ const loginController: RequestHandler = async (req, res, next) => {
       .lean()
     res.cookie('token', token, {
       maxAge: 30 * 24 * 3600 * 1000,
+      httpOnly: true,
     })
 
-    res.status(200).json({
+    res.json({
       status: true,
       message: 'log in successful',
       data: { ...others, ...userId, token },
@@ -36,6 +37,7 @@ const loginController: RequestHandler = async (req, res, next) => {
   }
 }
 const checkLoginController: RequestHandler = async (req, res, next) => {
+  console.log({ checkLogin: req.cookies.token })
   const token = req.cookies.token || req.headers.authorization?.split(' ')[1]
   console.log({ token })
   if (token) {

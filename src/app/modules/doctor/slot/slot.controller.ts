@@ -4,6 +4,8 @@ import { Error } from 'mongoose'
 
 const createSlotController: RequestHandler = async (req, res, next) => {
   try {
+    console.log(req.body)
+    console.log(req.headers.authorization)
     const slot = await slotServices.createSlot(req.body)
     res.status(200).json({
       status: true,

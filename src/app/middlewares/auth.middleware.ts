@@ -3,7 +3,7 @@ import config from '../../config'
 import jwt from 'jsonwebtoken'
 
 const verifyTokenMiddleware: RequestHandler = (req, res, next) => {
-  const token = req.cookies.token
+  const token = req.cookies.token || req.headers.authorization?.split(' ')[1]
 
   if (!token) {
     return res.status(401).json({
@@ -23,7 +23,7 @@ const verifyTokenMiddleware: RequestHandler = (req, res, next) => {
     next()
   })
 }
-const verifyUser = (userRole: 'patient' | 'doctor') => {
+const verifyUser = (userRole: 'Patient' | 'Doctor') => {
   const identifyRole: RequestHandler = (req, res, next) => {
     const { role } = req.decoded
     if (role === userRole) {
