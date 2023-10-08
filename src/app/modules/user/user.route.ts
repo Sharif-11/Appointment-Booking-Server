@@ -21,6 +21,7 @@ userRoutes.post(
   userControllers.loginController,
 )
 userRoutes.get('/login', userControllers.checkLoginController)
+userRoutes.post('/logout', userControllers.logoutController)
 userRoutes.patch(
   '/password',
   authMiddlewares.verifyTokenMiddleware,

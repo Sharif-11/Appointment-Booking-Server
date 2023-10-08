@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken'
 import config from '../../../config'
 import User from './user.model'
 type Role = 'Patient' | 'Doctor'
-const loginController: RequestHandler = async (req, res, next) => {
+const loginController: RequestHandler = async (req, res) => {
   try {
     const { phoneNo } = req.body
     const user = await userServices.findUserByPhone(phoneNo)
@@ -36,7 +36,7 @@ const loginController: RequestHandler = async (req, res, next) => {
     })
   }
 }
-const checkLoginController: RequestHandler = async (req, res, next) => {
+const checkLoginController: RequestHandler = async (req, res) => {
   console.log({ checkLogin: req.cookies.token })
   const token = req.cookies.token || req.headers.authorization?.split(' ')[1]
   console.log({ token })
@@ -69,7 +69,7 @@ const checkLoginController: RequestHandler = async (req, res, next) => {
     })
   }
 }
-const updatePasswordController: RequestHandler = async (req, res, next) => {
+const updatePasswordController: RequestHandler = async (req, res) => {
   try {
     let { password } = req.body
     const { phoneNo } = req.decoded
@@ -87,8 +87,13 @@ const updatePasswordController: RequestHandler = async (req, res, next) => {
     })
   }
 }
+const logoutController: RequestHandler = async (req, res) => {
+  res.clearCookie('token')
+  res.redirect('/')
+}
 export const userControllers = {
   loginController,
   checkLoginController,
   updatePasswordController,
+  logoutController,
 }
