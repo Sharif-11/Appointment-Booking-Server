@@ -1,6 +1,7 @@
 import { RequestHandler } from 'express'
 import { slotServices } from './slot.service'
 import { Error } from 'mongoose'
+import { daysOfWeek } from '../doctor.constant'
 
 const createSlotController: RequestHandler = async (req, res, next) => {
   try {
@@ -55,10 +56,11 @@ const deleteSlotController: RequestHandler = async (req, res, next) => {
 }
 const getSlotsOfDayController: RequestHandler = async (req, res) => {
   try {
+    const today = daysOfWeek[new Date().getDay()]
     const { weekDay } = req.body
     console.log(req.body)
     console.log({ weekDay })
-    const data = await slotServices.getSlots(weekDay)
+    const data = await slotServices.getSlots(weekDay || today)
     res.status(200).json({
       status: true,
       message: 'slots retreived successfully',
