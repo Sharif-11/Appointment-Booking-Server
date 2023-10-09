@@ -1,9 +1,9 @@
 import { RequestHandler } from 'express'
 import { slotServices } from './slot.service'
-import { Error } from 'mongoose'
 import { daysOfWeek } from '../doctor.constant'
+import ISlot from './slot.interface'
 
-const createSlotController: RequestHandler = async (req, res, next) => {
+const createSlotController: RequestHandler = async (req, res) => {
   try {
     console.log(req.body)
     console.log(req.headers.authorization)
@@ -21,7 +21,7 @@ const createSlotController: RequestHandler = async (req, res, next) => {
     })
   }
 }
-const getSlotsController: RequestHandler = async (req, res, next) => {
+const getSlotsController: RequestHandler = async (req, res) => {
   try {
     const allSlots = await slotServices.getAllSlot()
     res.status(200).json({
@@ -37,7 +37,7 @@ const getSlotsController: RequestHandler = async (req, res, next) => {
     })
   }
 }
-const deleteSlotController: RequestHandler = async (req, res, next) => {
+const deleteSlotController: RequestHandler = async (req, res) => {
   try {
     const { id } = req.params
     const deletedSlot = await slotServices.deleteSlot(id)
@@ -74,9 +74,32 @@ const getSlotsOfDayController: RequestHandler = async (req, res) => {
     })
   }
 }
+const getSlotsForAppointmentController: RequestHandler = async (req, res) => {
+  try {
+    const weekDay = daysOfWeek[new Date().getDay()]
+    const data = await slotServices.getSlotsForAppointment(weekDay)
+    const response: {
+      status: boolean
+      message: string
+      data: ISlot[]
+    } = {
+      status: true,
+      message: 'Slot retreived successsfully',
+      data,
+    }
+    res.status(200).json(response)
+  } catch (error) {
+    res.status(500).send({
+      status: false,
+      message: 'slot retreiving failed',
+      errors: [error.message],
+    })
+  }
+}
 export const slotControllers = {
   createSlotController,
   getSlotsController,
   deleteSlotController,
   getSlotsOfDayController,
+  getSlotsForAppointmentController,
 }

@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import Appointment from '../appointment/appointment.model'
 import ISlot from './slot.interface'
 import Slot from './slot.model'
 
@@ -19,4 +19,34 @@ const getSlots = async (weekDay: string) => {
   const result = await Slot.find({ weekDay })
   return result
 }
-export const slotServices = { createSlot, getAllSlot, deleteSlot, getSlots }
+const getSlotsForAppointment = async (weekDay: string): Promise<ISlot[]> => {
+  const result = await Slot.aggregate([
+    {
+      $lookup: {
+        from: 'appointments',
+        localField: '_id',
+        foreignField: 'slotId',
+        as: 'matchedDocs',
+      },
+    },
+    {
+      $match: {
+        weekDay,
+        matchedDocs: [],
+      },
+    },
+    {
+      $project: {
+        matchedDocs: 0,
+      },
+    },
+  ])
+  return result
+}
+export const slotServices = {
+  createSlot,
+  getAllSlot,
+  deleteSlot,
+  getSlots,
+  getSlotsForAppointment,
+}
