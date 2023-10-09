@@ -1,15 +1,18 @@
 import { RequestHandler } from 'express'
 import { bookingServices } from './booking.service'
 import { responseUtility } from '../../response/response.utils'
+import Patient from '../patient.model'
+import User from '../../user/user.model'
 
 const createBookingController: RequestHandler = async (req, res) => {
   try {
-    const { problemDescription, patientId } = req.body
-    console.log({ patientId })
+    const { problemDescription, userId } = req.body
+    const user = await User.findById(userId)
+    const patient = await Patient.findById(user!.userId)
     const { id } = req.params
     const { data, appointment } = await bookingServices.createBooking(
       id,
-      patientId,
+      patient!._id.toString(),
       problemDescription,
     )
     res.status(200).json({

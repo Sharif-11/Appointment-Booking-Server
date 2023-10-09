@@ -76,7 +76,7 @@ const checkBooking = async (appointmentId: string, phoneNo: string) => {
   const user = await User.findOne({ phoneNo })
   const existedBooking = await Booking.findOne({
     appointmentId,
-    userId: user._id,
+    patientId: user?.userId,
   })
   return existedBooking
 }
