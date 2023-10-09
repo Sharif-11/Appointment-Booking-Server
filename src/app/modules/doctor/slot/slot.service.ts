@@ -1,6 +1,7 @@
 import Appointment from '../appointment/appointment.model'
 import ISlot from './slot.interface'
 import Slot from './slot.model'
+import { slotUtilityFuntions } from './slot.utils'
 
 const createSlot = async (slot: ISlot) => {
   const newSlot = await Slot.create(slot)
@@ -41,7 +42,16 @@ const getSlotsForAppointment = async (weekDay: string): Promise<ISlot[]> => {
       },
     },
   ])
-  return result
+  return result.map(
+    ({ startTime, endTime, bookingStartTime, bookingEndTime, ...others }) => {
+      startTime = slotUtilityFuntions.convertTo12HourFormat(startTime)
+      endTime = slotUtilityFuntions.convertTo12HourFormat(endTime)
+      bookingStartTime =
+        slotUtilityFuntions.convertTo12HourFormat(bookingStartTime)
+      bookingEndTime = slotUtilityFuntions.convertTo12HourFormat(bookingEndTime)
+      return { startTime, endTime, bookingEndTime, bookingStartTime, ...others }
+    },
+  )
 }
 export const slotServices = {
   createSlot,
