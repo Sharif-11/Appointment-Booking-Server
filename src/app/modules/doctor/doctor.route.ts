@@ -27,6 +27,10 @@ doctorRoutes.post(
   appointmentValidate,
   appointmentControllers.createAppointmentController,
 )
+doctorRoutes.get(
+  '/appointment/startable-appointments',
+  appointmentControllers.startableAppointmentController,
+)
 doctorRoutes.patch(
   '/appointment/start-appointment/:id',
   appointmentControllers.startAppointmentController,

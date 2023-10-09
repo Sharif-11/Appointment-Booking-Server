@@ -1,5 +1,6 @@
 import { RequestHandler } from 'express'
 import { appointmentServices } from './appointment.service'
+import formatDate from './appointment.utils'
 
 const createAppointmentController: RequestHandler = async (req, res) => {
   try {
@@ -102,6 +103,23 @@ const getUpcomingAppointmentsController: RequestHandler = async (req, res) => {
     })
   }
 }
+const startableAppointmentController: RequestHandler = async (req, res) => {
+  try {
+    const date = formatDate(new Date())
+    const result = await appointmentServices.getStartableAppointments(date)
+    res.status(200).json({
+      status: 200,
+      message: 'startable appointments found successfully',
+      data: result,
+    })
+  } catch (error) {
+    res.status(500).json({
+      status: 200,
+      message: 'startable appointments retreiving failed',
+      errors: [error.message],
+    })
+  }
+}
 export const appointmentControllers = {
   createAppointmentController,
   startAppointmentController,
@@ -109,4 +127,5 @@ export const appointmentControllers = {
   deleteAppointmentController,
   getAppointmentsController,
   getUpcomingAppointmentsController,
+  startableAppointmentController,
 }
