@@ -91,13 +91,13 @@ const getUpcomingAppointmentsController: RequestHandler = async (req, res) => {
     const { date } = req.body
     const result = await appointmentServices.getUpcomingAppointment(date)
     res.status(200).json({
-      status: 200,
+      status: true,
       message: 'todays appointments found successfully',
       data: result,
     })
   } catch (error) {
     res.status(500).json({
-      status: 200,
+      status: false,
       message: 'todays appointments are not found successfully',
       errors: [error.message],
     })
@@ -108,15 +108,31 @@ const startableAppointmentController: RequestHandler = async (req, res) => {
     const date = formatDate(new Date())
     const result = await appointmentServices.getStartableAppointments(date)
     res.status(200).json({
-      status: 200,
+      status: true,
       message: 'startable appointments found successfully',
       data: result,
     })
   } catch (error) {
     res.status(500).json({
-      status: 200,
+      status: false,
       message: 'startable appointments retreiving failed',
       errors: [error.message],
+    })
+  }
+}
+const deletableAppointmentController: RequestHandler = async (req, res) => {
+  try {
+    const result = await appointmentServices.getDeletableAppointments()
+    res.status(200).json({
+      status: true,
+      message: 'deletable appointments found successfully',
+      data: result,
+    })
+  } catch (error) {
+    res.status(500).json({
+      status: false,
+      message: 'deletable appointments founding failed',
+      data: [error.message],
     })
   }
 }
@@ -128,4 +144,5 @@ export const appointmentControllers = {
   getAppointmentsController,
   getUpcomingAppointmentsController,
   startableAppointmentController,
+  deletableAppointmentController,
 }

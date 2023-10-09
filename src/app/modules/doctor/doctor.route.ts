@@ -31,6 +31,10 @@ doctorRoutes.get(
   '/appointment/startable-appointments',
   appointmentControllers.startableAppointmentController,
 )
+doctorRoutes.get(
+  '/appointment/deletable-appointments',
+  appointmentControllers.deletableAppointmentController,
+)
 doctorRoutes.patch(
   '/appointment/start-appointment/:id',
   appointmentControllers.startAppointmentController,

@@ -165,6 +165,47 @@ const getStartableAppointments = async (date: string) => {
   ])
   return result
 }
+const getDeletableAppointments = async () => {
+  const result = await Appointment.aggregate([
+    {
+      $match: {
+        status: {
+          $in: ['pending', 'closed'],
+        },
+      },
+    },
+    {
+      $lookup: {
+        from: 'bookings',
+        localField: '_id',
+        foreignField: 'appointmentId',
+        as: 'data',
+      },
+    },
+    {
+      $match: {
+        $or: [
+          {
+            status: 'pending',
+            data: [],
+          },
+          {
+            status: 'closed',
+          },
+        ],
+      },
+    },
+    {
+      $project: { data: 0 },
+    },
+    {
+      $sort: {
+        createdAt: -1,
+      },
+    },
+  ])
+  return result
+}
 export const appointmentServices = {
   createAppointment,
   startAppointment,
@@ -173,4 +214,5 @@ export const appointmentServices = {
   getAppointments,
   getUpcomingAppointment,
   getStartableAppointments,
+  getDeletableAppointments,
 }
