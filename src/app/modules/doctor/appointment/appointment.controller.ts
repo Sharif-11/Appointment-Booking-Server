@@ -88,7 +88,8 @@ const getAppointmentsController: RequestHandler = async (req, res) => {
 }
 const getUpcomingAppointmentsController: RequestHandler = async (req, res) => {
   try {
-    const { date } = req.body
+    const date = formatDate(new Date())
+    console.log({ date })
     const result = await appointmentServices.getUpcomingAppointment(date)
     res.status(200).json({
       status: true,

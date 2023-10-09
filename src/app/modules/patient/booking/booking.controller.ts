@@ -5,6 +5,7 @@ import { responseUtility } from '../../response/response.utils'
 const createBookingController: RequestHandler = async (req, res) => {
   try {
     const { problemDescription, patientId } = req.body
+    console.log({ patientId })
     const { id } = req.params
     const { data, appointment } = await bookingServices.createBooking(
       id,

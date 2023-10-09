@@ -129,9 +129,43 @@ const getAppointments = async () => {
   return appointments
 }
 const getUpcomingAppointment = async (date: string) => {
-  const result = await Appointment.find({
-    date: formatDate(new Date(date)),
-  }).sort({ createdAt: -1 })
+  const result = await Appointment.aggregate([
+    {
+      $match: {
+        status: 'pending',
+        date,
+      },
+    },
+    {
+      $lookup: {
+        from: 'slots',
+        localField: 'slotId',
+        foreignField: '_id',
+        as: 'data',
+      },
+    },
+    {
+      $unwind: '$data',
+    },
+    {
+      $project: {
+        _id: 1,
+        remainingSlots: 1,
+        status: 1,
+        createdAt: 1,
+        visitingFee: '$data.visitingFee',
+        startTime: '$data.startTime',
+        endTime: '$data.endTime',
+        bookingStartTime: '$data.bookingStartTime',
+        bookingEndTime: '$data.bookingEndTime',
+      },
+    },
+    {
+      $sort: {
+        createdAt: -1,
+      },
+    },
+  ])
   return result
 }
 const getStartableAppointments = async (date: string) => {
