@@ -1,79 +1,83 @@
 import { RequestHandler } from 'express'
 import { bookingServices } from './booking.service'
-import { responseUtility } from '../../response/response.utils'
-import Patient from '../patient.model'
-import User from '../../user/user.model'
+import Slot from '../../doctor/slot/slot.model'
+import { paymentServices } from '../../payment/payment.service'
+import mongoose from 'mongoose'
 
 const createBookingController: RequestHandler = async (req, res) => {
+  const session = await mongoose.startSession()
   try {
-    const { problemDescription, userId } = req.body
-    const user = await User.findById(userId)
-    const patient = await Patient.findById(user!.userId)
-    const { id } = req.params
-    const { data, appointment } = await bookingServices.createBooking(
-      id,
-      patient!._id.toString(),
+    await session.startTransaction()
+    const { name, userId: patientId, phoneNo, email } = req.body.user
+    const { problemDescription, slotId } = req.body
+    const { id: appointmentId } = req.params
+    const booking = await bookingServices.createBooking(
+      appointmentId,
+      patientId,
       problemDescription,
+      session,
     )
-    res.status(200).json({
-      status: true,
-      message: 'Appointment booked successfully',
-      data: { booking: data, appointment },
-    })
+    console.log({ slotId })
+    if (!booking) {
+      throw new Error('Booking creation failed')
+    }
+    const slot = await Slot.findById(slotId)
+    if (!slot) {
+      throw new Error('Slot with this id does not exist')
+    }
+    paymentServices
+      .initiatePayment(
+        slot.visitingFee,
+        booking._id.toString(),
+        name,
+        email,
+        phoneNo,
+      )
+      .then(async GatewayPageURL => {
+        await session.commitTransaction()
+        await session.endSession()
+        res.status(200).json({
+          status: true,
+          message: 'Booking created successfully',
+          data: { url: GatewayPageURL },
+        })
+      })
+      .catch(err => {
+        throw new Error('payment initiation failed')
+      })
   } catch (error) {
+    await session.abortTransaction()
+    await session.endSession()
     res.status(500).json({
       status: false,
-      message: 'Appointment booking failed',
+      message: 'Booking creation failed',
       errors: [error.message],
     })
   }
 }
 const checkBookingController: RequestHandler = async (req, res) => {
   try {
-    const { id } = req.params
-    const { phoneNo } = req.decoded
-    // console.log({ appointmentId, phoneNo })
-    const data = await bookingServices.checkBooking(id, phoneNo)
-    res
-      .status(200)
-      .json(
-        responseUtility.successResponse(
-          'slot confirmation success',
-          data === null ? false : true,
-        ),
-      )
-  } catch (error) {
-    res
-      .status(500)
-      .json(
-        responseUtility.errorResponse(`slot confirmation failed`, [
-          error?.message,
-        ]),
-        [error?.message],
-      )
-  }
-}
-const updateBookingStatusController: RequestHandler = async (req, res) => {
-  try {
-    const { id } = req.params
-    const { serviceStatus } = req.body
-    const data = await bookingServices.updateBookingStatus(id, serviceStatus)
+    const { id: appointmentId } = req.params
+    const { patientId } = req.body
+    const existedBooking = await bookingServices.findExistedBooking(
+      appointmentId,
+      patientId,
+    )
+    console.log(existedBooking)
     res.status(200).json({
       status: true,
-      message: 'service status updated successfully',
-      data,
+      message: 'existed booking checked successfully',
+      data: Boolean(existedBooking),
     })
   } catch (error) {
     res.status(500).json({
       status: false,
-      message: 'service status update failed',
+      message: 'existed booking checking failed',
       errors: [error.message],
     })
   }
 }
-
 export const bookingControllers = {
   createBookingController,
   checkBookingController,
-  updateBookingStatusController,
 }

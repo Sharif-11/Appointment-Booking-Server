@@ -4,7 +4,10 @@ import Slot from '../slot/slot.model'
 import Appointment from './appointment.model'
 import formatDate from './appointment.utils'
 import Booking from '../../patient/booking/booking.model'
-
+const getAppointment = async (id: string) => {
+  const result = await Appointment.findById(id)
+  return result
+}
 const createAppointment = async (id: string) => {
   const slot = await Slot.findById(id)
   if (!slot) {
@@ -158,6 +161,7 @@ const getUpcomingAppointment = async (date: string) => {
         endTime: '$data.endTime',
         bookingStartTime: '$data.bookingStartTime',
         bookingEndTime: '$data.bookingEndTime',
+        slotId: 1,
       },
     },
     {
@@ -240,6 +244,24 @@ const getDeletableAppointments = async () => {
   ])
   return result
 }
+const updateAppointmentSlotCount = async (
+  appointmentId: string,
+  session: mongoose.mongo.ClientSession,
+) => {
+  const result = await Appointment.findByIdAndUpdate(
+    appointmentId,
+    {
+      $inc: {
+        remainingSlots: -1,
+      },
+    },
+    {
+      new: true,
+      session,
+    },
+  )
+  return result
+}
 export const appointmentServices = {
   createAppointment,
   startAppointment,
@@ -249,4 +271,6 @@ export const appointmentServices = {
   getUpcomingAppointment,
   getStartableAppointments,
   getDeletableAppointments,
+  getAppointment,
+  updateAppointmentSlotCount,
 }

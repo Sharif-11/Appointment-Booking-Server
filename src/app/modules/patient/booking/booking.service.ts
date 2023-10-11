@@ -1,108 +1,51 @@
 import mongoose from 'mongoose'
-import Appointment from '../../doctor/appointment/appointment.model'
-import { daysOfWeek } from '../../doctor/doctor.constant'
-import User from '../../user/user.model'
+import { appointmentServices } from '../../doctor/appointment/appointment.service'
+import IBooking from './booking.interface'
 import Booking from './booking.model'
-import Patient from '../patient.model'
-
+const findExistedBooking = async (appointmentId: string, patientId: string) => {
+  const result = await Booking.findOne({ appointmentId, patientId })
+  return result
+}
 const createBooking = async (
   appointmentId: string,
   patientId: string,
-  problemDescription?: string,
+  problemDescription: string,
+  session: mongoose.mongo.ClientSession,
 ) => {
-  const currentDate = new Date()
-  const today = daysOfWeek[currentDate.getDay()]
-  const appointment = await Appointment.findById(appointmentId)
+  const appointment = await appointmentServices.getAppointment(appointmentId)
   if (!appointment) {
-    throw new Error("Appointment with this id doesn't exist")
+    throw new Error('Appointment with this id does not exist')
   }
-  const patient = await Patient.findById(patientId)
-  if (!patient) {
-    throw new Error('Patient with this id does not exist')
-  }
-
-  const appointmentDay = daysOfWeek[new Date(appointment.date).getDay()]
-  if (
-    today !== appointmentDay ||
-    appointment.status !== 'pending' ||
-    appointment.remainingSlots <= 0
-  ) {
-    throw new Error(`You can't book a slot for this appointment`)
-  }
-
-  const existedBooking = await Booking.findOne({ patientId, appointmentId })
+  const existedBooking = await findExistedBooking(appointmentId, patientId)
   if (existedBooking) {
     throw new Error('You already booked a slot')
   }
   const bookingInfo = {
-    patientId,
-    appointmentId: appointment._id,
-    problemDescription,
     paymentStatus: 'unpaid',
     serviceStatus: 'pending',
-  }
-  const session = await mongoose.startSession()
-  try {
-    await session.startTransaction()
-    const newBooking = await Booking.create([bookingInfo], { session })
-    if (!newBooking.length) {
-      throw new Error('booking failed')
-    }
-    const updatedAppointment = await Appointment.findByIdAndUpdate(
-      appointment._id.toString(),
-      {
-        $inc: {
-          remainingSlots: -1,
-        },
-      },
-      { new: true },
-    ).session(session)
-    if (!updatedAppointment) {
-      throw new Error('booking failed')
-    }
-    await session.commitTransaction()
-    await session.endSession()
-    return {
-      appointment: updatedAppointment,
-      data: newBooking,
-    }
-  } catch (error) {
-    await session.abortTransaction()
-    await session.endSession()
-    throw error
-  }
-}
-const checkBooking = async (appointmentId: string, phoneNo: string) => {
-  const user = await User.findOne({ phoneNo })
-  const existedBooking = await Booking.findOne({
     appointmentId,
-    patientId: user?.userId,
-  })
-  return existedBooking
+    patientId,
+    problemDescription,
+  }
+  const newBooking = await Booking.create([bookingInfo], { session })
+  return newBooking[0]
 }
 const updateBookingStatus = async (
-  bookingId: string,
-  status: 'pending' | 'in service' | 'waiting' | 'served',
+  id: string,
+  updateObj: Partial<IBooking>,
+  session?: mongoose.mongo.ClientSession,
 ) => {
-  const result = await Booking.updateOne(
+  const result = await Booking.findByIdAndUpdate(
+    id,
     {
-      _id: bookingId,
-      serviceStatus: {
-        $in: ['waiting', 'in service'],
-      },
+      $set: updateObj,
     },
-    {
-      $set: { serviceStatus: status },
-    },
-    {
-      new: true,
-    },
+    { new: true, session },
   )
   return result
 }
-
 export const bookingServices = {
   createBooking,
-  checkBooking,
   updateBookingStatus,
+  findExistedBooking,
 }

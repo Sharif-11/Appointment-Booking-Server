@@ -14,11 +14,21 @@ const loginController: RequestHandler = async (req, res) => {
       throw new Error('Phone number or password is wrong')
     }
     const token = await userAuth.createToken(phoneNo, user.role as Role)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, userId, ...others } = await User.findOne({
       phoneNo,
     })
       .populate('userId')
       .lean()
+    const { role } = others
+    const { _id, ...rest } = userId
+    const userInfo = {
+      userId: _id,
+      _id: others._id,
+      role,
+      phoneNo,
+      ...rest,
+    }
     res.cookie('token', token, {
       maxAge: 30 * 24 * 3600 * 1000,
       httpOnly: true,
@@ -27,7 +37,7 @@ const loginController: RequestHandler = async (req, res) => {
     res.json({
       status: true,
       message: 'log in successful',
-      data: { ...others, ...userId, token },
+      data: userInfo,
     })
   } catch (error) {
     res.status(401).json({
@@ -37,9 +47,7 @@ const loginController: RequestHandler = async (req, res) => {
   }
 }
 const checkLoginController: RequestHandler = async (req, res) => {
-  console.log({ checkLogin: req.cookies.token })
-  const token = req.cookies.token || req.headers.authorization?.split(' ')[1]
-  console.log({ token })
+  const token = req.cookies.token
   if (token) {
     jwt.verify(token, config.jwt_secret as string, async (err, decoded) => {
       if (!err) {
@@ -49,11 +57,19 @@ const checkLoginController: RequestHandler = async (req, res) => {
         })
           .populate('userId')
           .lean()
-
+        const { role } = others
+        const { _id, ...rest } = userId
+        const userInfo = {
+          userId: _id,
+          _id: others._id,
+          role,
+          phoneNo,
+          ...rest,
+        }
         res.status(200).json({
           status: true,
           message: 'already logged in',
-          data: { ...userId, ...others },
+          data: userInfo,
         })
       } else {
         res.status(500).json({

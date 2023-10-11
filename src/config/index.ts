@@ -7,4 +7,6 @@ export default {
   jwt_secret: process.env.JWT_SECRET,
   jwt_expires: process.env.JWT_EXPIRES,
   salt_round: process.env.SALT_ROUND,
+  ssl_id: process.env.SSL_ID,
+  ssl_password: process.env.SSL_PASSWORD,
 }
