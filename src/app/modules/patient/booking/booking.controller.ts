@@ -58,7 +58,7 @@ const createBookingController: RequestHandler = async (req, res) => {
 const checkBookingController: RequestHandler = async (req, res) => {
   try {
     const { id: appointmentId } = req.params
-    const { patientId } = req.body
+    const { userId: patientId } = req.body
     const existedBooking = await bookingServices.findExistedBooking(
       appointmentId,
       patientId,
@@ -67,7 +67,7 @@ const checkBookingController: RequestHandler = async (req, res) => {
     res.status(200).json({
       status: true,
       message: 'existed booking checked successfully',
-      data: Boolean(existedBooking),
+      data: existedBooking ? true : false,
     })
   } catch (error) {
     res.status(500).json({

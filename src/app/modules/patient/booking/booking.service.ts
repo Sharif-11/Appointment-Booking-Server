@@ -44,8 +44,13 @@ const updateBookingStatus = async (
   )
   return result
 }
+const deleteBooking = async (bookingId: string) => {
+  const result = await Booking.findByIdAndDelete(bookingId, { new: true })
+  return result
+}
 export const bookingServices = {
   createBooking,
   updateBookingStatus,
   findExistedBooking,
+  deleteBooking,
 }

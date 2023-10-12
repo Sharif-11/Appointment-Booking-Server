@@ -18,7 +18,7 @@ const confirmPaymentController: RequestHandler = async (req, res) => {
       amount,
     })
     if (!payment) {
-      throw new Error('psyment creation failed')
+      throw new Error('payment creation failed')
     }
     const updatedSlot = await bookingServices.updateBookingStatus(bookingId, {
       paymentStatus: 'paid',
@@ -49,4 +49,22 @@ const confirmPaymentController: RequestHandler = async (req, res) => {
     })
   }
 }
-export const paymentControllers = { confirmPaymentController }
+const errorPaymentController: RequestHandler = async (req, res) => {
+  try {
+    const { id: bookingId } = req.params
+    await bookingServices.deleteBooking(bookingId)
+    const html = `<h1 style="color: red;text-align:center">Payment Failed</h1>`
+    res.set('Content-Type', 'text/html')
+    res.send(html)
+  } catch (error) {
+    res.status(500).json({
+      status: false,
+      message: 'payment failed',
+      errors: [error.message],
+    })
+  }
+}
+export const paymentControllers = {
+  confirmPaymentController,
+  errorPaymentController,
+}

@@ -13,7 +13,10 @@ patientRoutes.use(
   authMiddlewares.verifyUser('Patient'),
 )
 patientRoutes.post('/booking/:id', bookingControllers.createBookingController)
-patientRoutes.get('/booking/:id', bookingControllers.checkBookingController)
+patientRoutes.post(
+  '/check-booking/:id',
+  bookingControllers.checkBookingController,
+)
 patientRoutes.get(
   '/appointments',
   appointmentControllers.getUpcomingAppointmentsController,
