@@ -1,11 +1,11 @@
 import express from 'express'
 import { authMiddlewares } from '../../middlewares/auth.middleware'
-import { bookingControllers } from './booking/booking.controller'
 import { appointmentControllers } from '../doctor/appointment/appointment.controller'
-import { patientControllers } from './patient.controller'
-import { patientValidators } from './patient.validator'
 import { slotControllers } from '../doctor/slot/slot.controller'
 import { patientQueueControllers } from '../patient-queue/patientQueue.controller'
+import { bookingControllers } from './booking/booking.controller'
+import { patientControllers } from './patient.controller'
+import { patientValidators } from './patient.validator'
 
 const patientRoutes = express.Router()
 patientRoutes.use(
