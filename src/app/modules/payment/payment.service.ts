@@ -1,12 +1,12 @@
 import mongoose from 'mongoose'
-import config from '../../../config'
-import IPayment from './payment.interface'
-import Payment from './payment.model'
 import SSLCommerzPayment from 'sslcommerz-lts'
-import { bookingServices } from '../patient/booking/booking.service'
-import IBooking from '../patient/booking/booking.interface'
+import config from '../../../config'
 import Appointment from '../doctor/appointment/appointment.model'
 import { appointmentServices } from '../doctor/appointment/appointment.service'
+import IBooking from '../patient/booking/booking.interface'
+import { bookingServices } from '../patient/booking/booking.service'
+import IPayment from './payment.interface'
+import Payment from './payment.model'
 
 const createPayment = async (
   payment: IPayment,
@@ -27,10 +27,10 @@ const initiatePayment = async (
     total_amount: amount,
     currency: 'BDT',
     tran_id: 'REF123', // use unique tran_id for each api call
-    success_url: 'http://localhost:5000/api/v1/payment/success/' + bookingId,
-    fail_url: 'http://localhost:5000/api/v1/payment/fail/' + bookingId,
-    cancel_url: 'http://localhost:5000/api/v1/payment/cancel/' + bookingId,
-    ipn_url: 'http://localhost:5000/api/v1/payment/ipn/' + bookingId,
+    success_url: 'http://18.138.71.5:5000/api/v1/payment/success/' + bookingId,
+    fail_url: 'http://18.138.71.5:5000/api/v1/payment/fail/' + bookingId,
+    cancel_url: 'http://18.138.71.5:5000/api/v1/payment/cancel/' + bookingId,
+    ipn_url: 'http://18.138.71.5:5000/api/v1/payment/ipn/' + bookingId,
     shipping_method: 'Courier',
     product_name: 'Computer.',
     product_category: 'Electronic',
