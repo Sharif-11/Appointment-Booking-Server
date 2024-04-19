@@ -1,10 +1,9 @@
 import { RequestHandler } from 'express'
-import { paymentServices } from './payment.service'
 import mongoose from 'mongoose'
 import { appointmentServices } from '../doctor/appointment/appointment.service'
-import { slotServices } from '../doctor/slot/slot.service'
-import { bookingServices } from '../patient/booking/booking.service'
 import Booking from '../patient/booking/booking.model'
+import { bookingServices } from '../patient/booking/booking.service'
+import { paymentServices } from './payment.service'
 
 const confirmPaymentController: RequestHandler = async (req, res) => {
   const session = await mongoose.startSession()

@@ -1,10 +1,10 @@
-import { RequestHandler } from 'express'
-import { userServices } from './user.service'
 import bcrypt from 'bcrypt'
-import { userAuth } from './user.auth'
+import { RequestHandler } from 'express'
 import jwt from 'jsonwebtoken'
 import config from '../../../config'
+import { userAuth } from './user.auth'
 import User from './user.model'
+import { userServices } from './user.service'
 type Role = 'Patient' | 'Doctor'
 const loginController: RequestHandler = async (req, res) => {
   try {
@@ -31,7 +31,6 @@ const loginController: RequestHandler = async (req, res) => {
     }
     res.cookie('token', token, {
       maxAge: 30 * 24 * 3600 * 1000,
-      httpOnly: true,
     })
 
     res.json({
@@ -105,7 +104,10 @@ const updatePasswordController: RequestHandler = async (req, res) => {
 }
 const logoutController: RequestHandler = async (req, res) => {
   res.clearCookie('token')
-  res.redirect('/')
+  res.status(200).json({
+    status: true,
+    message: 'Logged out',
+  })
 }
 export const userControllers = {
   loginController,

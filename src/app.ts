@@ -11,15 +11,29 @@ import userRoutes from './app/modules/user/user.route'
 const app: Application = express()
 
 app.use(express.json())
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://18.138.71.5:5173',
+  'null',
+]
+const corsOptions = {
+  origin: function (origin: string, callback) {
+    console.clear()
+    console.log({ origin })
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
+  credentials: true, // Allow credentials
+}
+
+// Use CORS middleware
+app.use(cors(corsOptions))
+
 app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }))
-app.use(
-  cors({
-    origin: '*',
-    allowedHeaders: ['Content-Type'],
-    credentials: true,
-  }),
-)
 app.use('/api/v1/user', userRoutes)
 app.use('/api/v1/doctor', doctorRoutes)
 app.use('/api/v1/patient', patientRoutes)
