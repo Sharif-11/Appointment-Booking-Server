@@ -4,6 +4,7 @@ import cors from 'cors'
 import express, { Application, Request, Response } from 'express'
 import globalErrorHandler from './app/errors/globalErroHandler'
 import doctorRoutes from './app/modules/doctor/doctor.route'
+import { slotControllers } from './app/modules/doctor/slot/slot.controller'
 import { patientControllers } from './app/modules/patient/patient.controller'
 import patientRoutes from './app/modules/patient/patient.route'
 import paymentRoutes from './app/modules/payment/payment.route'
@@ -36,6 +37,7 @@ app.use('/api/v1/user', userRoutes)
 app.use('/api/v1/doctor', doctorRoutes)
 app.use('/api/v1/patient', patientRoutes)
 app.get('/api/v1/doctor-info', patientControllers.getDoctorProfileController)
+app.get('/api/v1/slots/:weekDay', slotControllers.getSlotsOfDayController)
 app.use('/api/v1/payment', paymentRoutes)
 
 app.get('/', (req: Request, res: Response) => {

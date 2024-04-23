@@ -1,7 +1,7 @@
 import { RequestHandler } from 'express'
-import { slotServices } from './slot.service'
 import { daysOfWeek } from '../doctor.constant'
 import ISlot from './slot.interface'
+import { slotServices } from './slot.service'
 
 const createSlotController: RequestHandler = async (req, res) => {
   try {
@@ -57,7 +57,7 @@ const deleteSlotController: RequestHandler = async (req, res) => {
 const getSlotsOfDayController: RequestHandler = async (req, res) => {
   try {
     const today = daysOfWeek[new Date().getDay()]
-    const { weekDay } = req.body
+    const { weekDay } = req.params
     console.log(req.body)
     console.log({ weekDay })
     const data = await slotServices.getSlots(weekDay || today)
