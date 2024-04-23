@@ -57,7 +57,7 @@ const deleteSlotController: RequestHandler = async (req, res) => {
 const getSlotsOfDayController: RequestHandler = async (req, res) => {
   try {
     const today = daysOfWeek[new Date().getDay()]
-    const { weekDay } = req.params
+    const weekDay = req.params.weekDay || req.body.weekDay
     console.log(req.body)
     console.log({ weekDay })
     const data = await slotServices.getSlots(weekDay || today)
