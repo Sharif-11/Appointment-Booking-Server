@@ -1,7 +1,6 @@
-import Appointment from '../appointment/appointment.model'
+import { getToday } from '../../../utils/time.utils'
 import ISlot from './slot.interface'
 import Slot from './slot.model'
-import { slotUtilityFuntions } from './slot.utils'
 
 const createSlot = async (slot: ISlot) => {
   const newSlot = await Slot.create(slot)
@@ -21,38 +20,10 @@ const getSlots = async (weekDay: string) => {
   return result
 }
 const getSlotsForAppointment = async (weekDay: string): Promise<ISlot[]> => {
-  const result = await Slot.aggregate([
-    {
-      $lookup: {
-        from: 'appointments',
-        localField: '_id',
-        foreignField: 'slotId',
-        as: 'matchedDocs',
-      },
-    },
-    {
-      $match: {
-        weekDay,
-        matchedDocs: [],
-      },
-    },
-    {
-      $project: {
-        matchedDocs: 0,
-      },
-    },
-  ])
-  return result.map(
-    ({ startTime, endTime, bookingStartTime, bookingEndTime, ...others }) => {
-      startTime = slotUtilityFuntions.convertTo12HourFormat(startTime)
-      endTime = slotUtilityFuntions.convertTo12HourFormat(endTime)
-      bookingStartTime =
-        slotUtilityFuntions.convertTo12HourFormat(bookingStartTime)
-      bookingEndTime = slotUtilityFuntions.convertTo12HourFormat(bookingEndTime)
-      return { startTime, endTime, bookingEndTime, bookingStartTime, ...others }
-    },
-  )
+  const result = await Slot.find({ weekDay: getToday() || weekDay }).lean()
+  return result
 }
+
 export const slotServices = {
   createSlot,
   getAllSlot,
