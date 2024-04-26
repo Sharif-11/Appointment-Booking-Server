@@ -1,9 +1,10 @@
 import mongoose from 'mongoose'
+import { getToday } from '../../../utils/time.utils'
+import Booking from '../../patient/booking/booking.model'
 import { daysOfWeek } from '../doctor.constant'
 import Slot from '../slot/slot.model'
 import Appointment from './appointment.model'
 import formatDate from './appointment.utils'
-import Booking from '../../patient/booking/booking.model'
 const getAppointment = async (id: string) => {
   const result = await Appointment.findById(id)
   return result
@@ -14,14 +15,13 @@ const createAppointment = async (id: string) => {
     throw new Error("slot with this id don't exists")
   }
   const { capacity } = slot
-  const currentDate = new Date()
-  const today = daysOfWeek[currentDate.getDay()]
-  if (today !== slot.weekDay) {
+
+  if (getToday() !== slot.weekDay) {
     throw new Error(`You can't create a appointment for this slot now`)
   }
   const appointmentData = {
     slotId: slot._id,
-    date: formatDate(currentDate),
+    date: formatDate(),
     remainingSlots: capacity,
     status: 'pending',
   }
@@ -262,6 +262,11 @@ const updateAppointmentSlotCount = async (
   )
   return result
 }
+const existingAppointmentForSlotInDay = async (slotId: string) => {
+  console.log({ slotId, date: formatDate() })
+  const result = await Appointment.findOne({ slotId, date: formatDate() })
+  return result
+}
 export const appointmentServices = {
   createAppointment,
   startAppointment,
@@ -273,4 +278,5 @@ export const appointmentServices = {
   getDeletableAppointments,
   getAppointment,
   updateAppointmentSlotCount,
+  existingAppointmentForSlotInDay,
 }

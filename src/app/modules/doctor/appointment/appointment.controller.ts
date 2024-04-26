@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { RequestHandler } from 'express'
 import { appointmentServices } from './appointment.service'
 import formatDate from './appointment.utils'
@@ -12,7 +13,7 @@ const createAppointmentController: RequestHandler = async (req, res) => {
       message: 'Appointment created successfully',
       data: appointment,
     })
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).send({
       status: false,
       message: 'Appointment creation failed',
@@ -28,7 +29,7 @@ const startAppointmentController: RequestHandler = async (req, res) => {
       status: true,
       message: 'appointment started successfully',
     })
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({
       status: false,
       message: 'Appointment starting failed',
@@ -45,7 +46,7 @@ const closeAppointmentController: RequestHandler = async (req, res) => {
       message: 'appoinment closed successfully',
       data,
     })
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({
       status: false,
       message: 'appoinment closing failed',
@@ -62,7 +63,7 @@ const deleteAppointmentController: RequestHandler = async (req, res) => {
       message: 'appointment deleted successfully',
       data,
     })
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({
       status: false,
       message: 'appointment deletion failed',
@@ -78,7 +79,7 @@ const getAppointmentsController: RequestHandler = async (req, res) => {
       message: 'appointments found successfully',
       data: result,
     })
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({
       status: false,
       message: 'appointments retreiving failed',
@@ -96,7 +97,7 @@ const getUpcomingAppointmentsController: RequestHandler = async (req, res) => {
       message: 'todays appointments found successfully',
       data: result,
     })
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({
       status: false,
       message: 'todays appointments are not found successfully',
@@ -113,7 +114,7 @@ const startableAppointmentController: RequestHandler = async (req, res) => {
       message: 'startable appointments found successfully',
       data: result,
     })
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({
       status: false,
       message: 'startable appointments retreiving failed',
@@ -129,7 +130,7 @@ const deletableAppointmentController: RequestHandler = async (req, res) => {
       message: 'deletable appointments found successfully',
       data: result,
     })
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({
       status: false,
       message: 'deletable appointments founding failed',
@@ -137,6 +138,29 @@ const deletableAppointmentController: RequestHandler = async (req, res) => {
     })
   }
 }
+const existingAppointmentForSlotInDayController: RequestHandler = async (
+  req,
+  res,
+) => {
+  try {
+    const { slotId } = req.params
+    const result = await appointmentServices.existingAppointmentForSlotInDay(
+      slotId,
+    )
+    res.status(200).json({
+      status: true,
+      message: 'existing appointment retreived successfully',
+      data: result,
+    })
+  } catch (error: any) {
+    res.status(500).json({
+      status: false,
+      message: 'Appointment retreiving failed',
+      data: [error.message],
+    })
+  }
+}
+
 export const appointmentControllers = {
   createAppointmentController,
   startAppointmentController,
@@ -146,4 +170,5 @@ export const appointmentControllers = {
   getUpcomingAppointmentsController,
   startableAppointmentController,
   deletableAppointmentController,
+  existingAppointmentForSlotInDayController,
 }

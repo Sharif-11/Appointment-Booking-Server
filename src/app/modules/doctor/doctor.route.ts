@@ -1,14 +1,12 @@
 import express from 'express'
-import { slotValidators } from './slot/slot.validator'
-import { slotControllers } from './slot/slot.controller'
 import { authMiddlewares } from '../../middlewares/auth.middleware'
-import appointmentValidate from './appointment/appointment.validator'
-import { appointmentControllers } from './appointment/appointment.controller'
 import { patientQueueControllers } from '../patient-queue/patientQueue.controller'
-import { bookingValidators } from '../patient/booking/booking.validator'
-import { bookingControllers } from '../patient/booking/booking.controller'
+import { appointmentControllers } from './appointment/appointment.controller'
+import appointmentValidate from './appointment/appointment.validator'
 import { doctorControllers } from './doctor.controller'
 import { doctorValidators } from './doctor.validator'
+import { slotControllers } from './slot/slot.controller'
+import { slotValidators } from './slot/slot.validator'
 const doctorRoutes = express.Router()
 doctorRoutes.use(
   authMiddlewares.verifyTokenMiddleware,
@@ -64,6 +62,10 @@ doctorRoutes.put(
   '/profile',
   doctorValidators.updateDoctorValidation,
   doctorControllers.updateDoctorController,
+)
+doctorRoutes.get(
+  '/appointment/:slotId',
+  appointmentControllers.existingAppointmentForSlotInDayController,
 )
 //doctorRoutes.put('/slot/:id', slotControllers.updateSlotController)
 export default doctorRoutes
