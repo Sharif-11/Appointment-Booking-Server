@@ -87,7 +87,12 @@ const checkLoginController: RequestHandler = async (req, res) => {
 const updatePasswordController: RequestHandler = async (req, res) => {
   try {
     let { password } = req.body
+    const { oldPassword } = req.body
     const { phoneNo } = req.decoded
+    const user = await userServices.findUserByPhone(phoneNo)
+    if (!user || !bcrypt.compareSync(oldPassword, user.password)) {
+      throw new Error('Password is wrong')
+    }
     password = await bcrypt.hash(password, Number(config.salt_round as string))
     const updatedUser = await userServices.updateUserPassword(phoneNo, password)
     res.status(200).json({
@@ -98,7 +103,7 @@ const updatePasswordController: RequestHandler = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       status: false,
-      message: 'password update failed',
+      message: error?.message,
     })
   }
 }

@@ -1,8 +1,8 @@
 import mongoose from 'mongoose'
+import Doctor from '../doctor/doctor.model'
+import User from '../user/user.model'
 import IPatient from './patient.interface'
 import Patient from './patient.model'
-import User from '../user/user.model'
-import Doctor from '../doctor/doctor.model'
 
 const createPatientService = async userData => {
   const role = 'Patient'

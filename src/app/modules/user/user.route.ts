@@ -1,9 +1,9 @@
 import express from 'express'
-import { userValidator } from './user.validator'
+import { authMiddlewares } from '../../middlewares/auth.middleware'
 import { doctorControllers } from '../doctor/doctor.controller'
 import { patientControllers } from '../patient/patient.controller'
 import { userControllers } from './user.controller'
-import { authMiddlewares } from '../../middlewares/auth.middleware'
+import { userValidator } from './user.validator'
 const userRoutes = express.Router()
 userRoutes.post(
   '/doctor',
