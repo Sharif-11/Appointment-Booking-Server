@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 import { SlotTime, weekDays } from './slot.interface'
-const convertTo12HourFormat = (time24: string): string => {
+export const convertTo12HourFormat = (time24: string): string => {
   // Split the time into hours and minutes
   const [hours, minutes] = time24.split(':').map(Number)
 
@@ -17,7 +17,7 @@ const convertTo12HourFormat = (time24: string): string => {
 
   return time12
 }
-const convertTo24HourFormat = (time12: string): string => {
+export const convertTo24HourFormat = (time12: string): string => {
   const [timePart, period] = time12.split(' ')
   const [hours, minutes] = timePart.split(':').map(Number)
   let hours24 = hours

@@ -3,6 +3,7 @@ import { getToday } from '../../../utils/time.utils'
 import Booking from '../../patient/booking/booking.model'
 import { daysOfWeek } from '../doctor.constant'
 import Slot from '../slot/slot.model'
+import { convertTo12HourFormat } from '../slot/slot.utils'
 import Appointment from './appointment.model'
 import formatDate from './appointment.utils'
 const getAppointment = async (id: string) => {
@@ -267,6 +268,60 @@ const existingAppointmentForSlotInDay = async (slotId: string) => {
   const result = await Appointment.findOne({ slotId, date: formatDate() })
   return result
 }
+const allAppointments = async () => {
+  const result = await Appointment.aggregate([
+    {
+      $lookup: {
+        from: 'slots',
+        localField: 'slotId',
+        foreignField: '_id',
+        as: 'slotInfo',
+      },
+    },
+    {
+      $addFields: {
+        appointmentAction: {
+          $switch: {
+            branches: [
+              { case: { $eq: ['$status', 'pending'] }, then: 'run' },
+              { case: { $eq: ['$status', 'running'] }, then: 'close' },
+            ],
+            default: 'closed',
+          },
+        },
+      },
+    },
+    {
+      $unwind: '$slotInfo', // Unwind the slotInfo array to flatten it
+    },
+    {
+      $project: {
+        _id: 1,
+        date: 1,
+        remainingSlots: 1,
+        status: 1,
+        slotId: '$slotInfo._id',
+        appointmentAction: 1,
+        startTime: '$slotInfo.startTime',
+        endTime: '$slotInfo.endTime',
+        bookingStartTime: '$slotInfo.bookingStartTime',
+        bookingEndTime: '$slotInfo.bookingEndTime',
+      },
+    },
+  ])
+  return result.map(
+    ({ startTime, endTime, bookingStartTime, bookingEndTime, ...others }) => {
+      return {
+        ...others,
+        startTime: convertTo12HourFormat(startTime),
+        endTime: convertTo12HourFormat(endTime),
+        bookingStartTime: convertTo12HourFormat(bookingStartTime),
+        bookingEndTime: convertTo12HourFormat(bookingEndTime),
+      }
+    },
+  )
+}
+
 export const appointmentServices = {
   createAppointment,
   startAppointment,
@@ -279,4 +334,5 @@ export const appointmentServices = {
   getAppointment,
   updateAppointmentSlotCount,
   existingAppointmentForSlotInDay,
+  allAppointments,
 }

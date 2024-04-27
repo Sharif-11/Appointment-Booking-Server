@@ -19,6 +19,10 @@ doctorRoutes.post(
 )
 doctorRoutes.post('/slots', slotControllers.getSlotsOfDayController)
 doctorRoutes.get('/slots', slotControllers.getSlotsForAppointmentController)
+doctorRoutes.get(
+  '/appointments',
+  appointmentControllers.allAppointmentsController,
+)
 doctorRoutes.delete('/slot/:id', slotControllers.deleteSlotController)
 doctorRoutes.post(
   '/appointment',

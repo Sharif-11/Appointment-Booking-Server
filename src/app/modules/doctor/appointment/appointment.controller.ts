@@ -160,6 +160,22 @@ const existingAppointmentForSlotInDayController: RequestHandler = async (
     })
   }
 }
+const allAppointmentsController: RequestHandler = async (req, res) => {
+  try {
+    const result = await appointmentServices.allAppointments()
+    res.status(200).json({
+      status: true,
+      message: 'existing appointment retreived successfully',
+      data: result,
+    })
+  } catch (error: any) {
+    res.status(500).json({
+      status: false,
+      message: 'Appointment retreiving failed',
+      data: [error.message],
+    })
+  }
+}
 
 export const appointmentControllers = {
   createAppointmentController,
@@ -171,4 +187,5 @@ export const appointmentControllers = {
   startableAppointmentController,
   deletableAppointmentController,
   existingAppointmentForSlotInDayController,
+  allAppointmentsController,
 }
