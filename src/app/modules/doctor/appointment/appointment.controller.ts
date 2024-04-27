@@ -165,13 +165,13 @@ const allAppointmentsController: RequestHandler = async (req, res) => {
     const result = await appointmentServices.allAppointments()
     res.status(200).json({
       status: true,
-      message: 'existing appointment retreived successfully',
+      message: 'All appointments retreived successfully',
       data: result,
     })
   } catch (error: any) {
     res.status(500).json({
       status: false,
-      message: 'Appointment retreiving failed',
+      message: 'Appointments retreiving failed',
       data: [error.message],
     })
   }

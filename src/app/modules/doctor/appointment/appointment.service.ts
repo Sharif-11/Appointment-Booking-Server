@@ -270,6 +270,7 @@ const existingAppointmentForSlotInDay = async (slotId: string) => {
 }
 const allAppointments = async () => {
   const result = await Appointment.aggregate([
+    { $match: { date: formatDate() } },
     {
       $lookup: {
         from: 'slots',
