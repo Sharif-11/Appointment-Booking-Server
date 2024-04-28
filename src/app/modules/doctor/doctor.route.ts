@@ -46,7 +46,7 @@ doctorRoutes.patch(
   appointmentControllers.closeAppointmentController,
 )
 doctorRoutes.delete(
-  '/appointment/:id',
+  '/appointment/delete-appointment/:id',
   appointmentControllers.deleteAppointmentController,
 )
 doctorRoutes.get(

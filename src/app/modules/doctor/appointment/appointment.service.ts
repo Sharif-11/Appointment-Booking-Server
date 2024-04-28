@@ -114,9 +114,7 @@ const deleteAppoinment = async (id: string) => {
     const result = await Appointment.findByIdAndDelete(id)
     return result
   } else {
-    const pendingPatient = await Booking.findOne({
-      serviceStatus: 'pending',
-    })
+    const pendingPatient = await Booking.findOne({})
     if (pendingPatient) {
       throw new Error(
         `Appoinment which has any booked patient can't be deleted`,
@@ -280,21 +278,68 @@ const allAppointments = async () => {
       },
     },
     {
+      $lookup: {
+        from: 'bookings',
+        localField: '_id',
+        foreignField: 'appointmentId',
+        as: 'bookings',
+      },
+    },
+    {
       $addFields: {
         appointmentAction: {
           $switch: {
             branches: [
-              { case: { $eq: ['$status', 'pending'] }, then: 'run' },
-              { case: { $eq: ['$status', 'running'] }, then: 'close' },
+              {
+                case: { $eq: ['$status', 'closed'] },
+                then: 'delete',
+              },
+              {
+                case: { $eq: ['$status', 'pending'] },
+                then: {
+                  $cond: {
+                    if: { $eq: [{ $size: { $ifNull: ['$bookings', []] } }, 0] },
+                    then: 'delete',
+                    else: {
+                      $cond: {
+                        if: { $in: ['paid', '$bookings.paymentStatus'] },
+                        then: 'start',
+                        else: null,
+                      },
+                    },
+                  },
+                },
+              },
+              {
+                case: { $eq: ['$status', 'running'] },
+                then: {
+                  $cond: {
+                    if: {
+                      $eq: [
+                        {
+                          $size: {
+                            $filter: {
+                              input: '$bookings',
+                              as: 'b',
+                              cond: { $ne: ['served', '$$b.serviceStatus'] },
+                            },
+                          },
+                        },
+                        0,
+                      ],
+                    },
+                    then: 'close',
+                    else: null,
+                  },
+                },
+              },
             ],
-            default: 'closed',
+            default: null,
           },
         },
       },
     },
-    {
-      $unwind: '$slotInfo', // Unwind the slotInfo array to flatten it
-    },
+    { $unwind: '$slotInfo' }, // Unwind the slotInfo array to flatten it
     {
       $project: {
         _id: 1,
@@ -310,6 +355,7 @@ const allAppointments = async () => {
       },
     },
   ])
+
   return result.map(
     ({ startTime, endTime, bookingStartTime, bookingEndTime, ...others }) => {
       return {
