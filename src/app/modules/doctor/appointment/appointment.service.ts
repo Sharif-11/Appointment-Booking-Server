@@ -114,7 +114,7 @@ const deleteAppoinment = async (id: string) => {
     const result = await Appointment.findByIdAndDelete(id)
     return result
   } else {
-    const pendingPatient = await Booking.findOne({})
+    const pendingPatient = await Booking.findOne({ appointmentId: id })
     if (pendingPatient) {
       throw new Error(
         `Appoinment which has any booked patient can't be deleted`,
