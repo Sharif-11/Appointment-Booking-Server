@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { RequestHandler } from 'express'
 import { patientQueueServices } from './patientQueue.service'
 
@@ -10,7 +11,7 @@ const getQueuedPatientController: RequestHandler = async (req, res) => {
       message: 'patient queue retreived successfully',
       data,
     })
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({
       status: 500,
       message: 'patient queue retreiving failed',
@@ -18,4 +19,24 @@ const getQueuedPatientController: RequestHandler = async (req, res) => {
     })
   }
 }
-export const patientQueueControllers = { getQueuedPatientController }
+const updateServiceStatusController: RequestHandler = async (req, res) => {
+  try {
+    const { bookingId } = req.params
+    const data = await patientQueueServices.updateServiceStatus(bookingId)
+    res.status(200).json({
+      status: true,
+      message: 'Service status updated successfully',
+      data,
+    })
+  } catch (error: any) {
+    res.status(500).json({
+      status: 500,
+      message: 'Service status updating failed',
+      errors: [error.message],
+    })
+  }
+}
+export const patientQueueControllers = {
+  getQueuedPatientController,
+  updateServiceStatusController,
+}

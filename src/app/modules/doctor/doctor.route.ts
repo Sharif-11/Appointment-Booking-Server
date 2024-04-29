@@ -57,6 +57,10 @@ doctorRoutes.get(
   '/patient-queue/:id',
   patientQueueControllers.getQueuedPatientController,
 )
+doctorRoutes.patch(
+  '/patient-queue/:bookingId',
+  patientQueueControllers.updateServiceStatusController,
+)
 // doctorRoutes.patch(
 //   '/booking/:id',
 //   bookingValidators.validateServiceStatus,

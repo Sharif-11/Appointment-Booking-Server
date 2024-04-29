@@ -111,8 +111,22 @@ const deleteAppoinment = async (id: string) => {
   if (appoinment.status === 'running') {
     throw new Error(`Running appointment can't be deleted`)
   } else if (appoinment.status === 'closed') {
-    const result = await Appointment.findByIdAndDelete(id)
-    return result
+    const session = await mongoose.startSession()
+    try {
+      const deleteAllBookings = await Booking.deleteMany({
+        appointmentId: appoinment._id,
+      }).session(session)
+      if (!deleteAllBookings) {
+        throw new Error('Appointment deletion failed')
+      }
+      await Appointment.findByIdAndDelete(id).session(session)
+      await session.commitTransaction()
+      await session.endSession()
+    } catch (error) {
+      await session.abortTransaction()
+      await session.endSession()
+      throw error
+    }
   } else {
     const pendingPatient = await Booking.findOne({ appointmentId: id })
     if (pendingPatient) {
