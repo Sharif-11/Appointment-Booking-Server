@@ -28,6 +28,12 @@ const createBooking = async (
     problemDescription,
   }
   const newBooking = await Booking.create([bookingInfo], { session })
+  setTimeout(async () => {
+    await Booking.deleteOne({
+      _id: newBooking[0]?._id,
+      paymentStatus: 'unpaid',
+    })
+  }, 60 * 1000)
   return newBooking[0]
 }
 const updateBookingStatus = async (

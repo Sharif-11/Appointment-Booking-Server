@@ -51,6 +51,7 @@ const confirmPaymentController: RequestHandler = async (req, res) => {
 const errorPaymentController: RequestHandler = async (req, res) => {
   try {
     const { id: bookingId } = req.params
+    console.log({ errorId: bookingId })
     await bookingServices.deleteBooking(bookingId)
     const html = `<h1 style="color: red;text-align:center">Payment Failed</h1>`
     res.set('Content-Type', 'text/html')

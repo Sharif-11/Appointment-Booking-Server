@@ -27,10 +27,10 @@ const initiatePayment = async (
     total_amount: amount,
     currency: 'BDT',
     tran_id: 'REF123', // use unique tran_id for each api call
-    success_url: 'http://18.138.71.5:5000/api/v1/payment/success/' + bookingId,
-    fail_url: 'http://18.138.71.5:5000/api/v1/payment/fail/' + bookingId,
-    cancel_url: 'http://18.138.71.5:5000/api/v1/payment/cancel/' + bookingId,
-    ipn_url: 'http://18.138.71.5:5000/api/v1/payment/ipn/' + bookingId,
+    success_url: 'http://localhost:5000/api/v1/payment/success/' + bookingId,
+    fail_url: 'http://localhost:5000/api/v1/payment/fail/' + bookingId,
+    cancel_url: 'http://localhost:5000/api/v1/payment/cancel/' + bookingId,
+    ipn_url: 'http://localhost:5000/api/v1/payment/ipn/' + bookingId,
     shipping_method: 'Courier',
     product_name: 'Computer.',
     product_category: 'Electronic',
@@ -95,7 +95,11 @@ const confirmPayment = async (paymentData: IPayment, bookingId: string) => {
       )
     await session.commitTransaction()
     await session.endSession()
-  } catch (error) {}
+  } catch (error) {
+    await session.abortTransaction()
+    await session.endSession()
+    throw error
+  }
 }
 export const paymentServices = {
   createPayment,

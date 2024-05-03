@@ -3,6 +3,7 @@ import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import express, { Application, Request, Response } from 'express'
 import globalErrorHandler from './app/errors/globalErroHandler'
+import { appointmentControllers } from './app/modules/doctor/appointment/appointment.controller'
 import doctorRoutes from './app/modules/doctor/doctor.route'
 import { slotControllers } from './app/modules/doctor/slot/slot.controller'
 import { patientControllers } from './app/modules/patient/patient.controller'
@@ -33,6 +34,10 @@ app.use('/api/v1/user', userRoutes)
 app.use('/api/v1/doctor', doctorRoutes)
 app.use('/api/v1/patient', patientRoutes)
 app.get('/api/v1/doctor-info', patientControllers.getDoctorProfileController)
+app.get(
+  '/api/v1/appointments',
+  appointmentControllers.getUpcomingAppointmentsController,
+)
 app.get('/api/v1/slots/:weekDay', slotControllers.getSlotsOfDayController)
 app.use('/api/v1/payment', paymentRoutes)
 
