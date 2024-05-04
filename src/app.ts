@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 console.clear()
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
@@ -10,16 +11,13 @@ import { patientControllers } from './app/modules/patient/patient.controller'
 import patientRoutes from './app/modules/patient/patient.route'
 import paymentRoutes from './app/modules/payment/payment.route'
 import userRoutes from './app/modules/user/user.route'
+
 const app: Application = express()
 
 app.use(express.json())
-const allowedOrigins = [
-  'http://localhost:5173',
-  'http://18.138.71.5:5173',
-  'null',
-]
+
 const corsOptions = {
-  origin: function (origin: string, callback) {
+  origin: function (origin: string, callback: any) {
     callback(null, true)
   },
   credentials: true, // Allow credentials
@@ -38,11 +36,13 @@ app.get(
   '/api/v1/appointments',
   appointmentControllers.getUpcomingAppointmentsController,
 )
+app.get('/api/v1/appointment/:id', appointmentControllers.getAppointment)
 app.get('/api/v1/slots/:weekDay', slotControllers.getSlotsOfDayController)
 app.use('/api/v1/payment', paymentRoutes)
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Welcome to appointment booking system!!!')
 })
+
 app.use(globalErrorHandler)
 export default app

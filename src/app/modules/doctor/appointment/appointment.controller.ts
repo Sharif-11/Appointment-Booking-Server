@@ -1,8 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { RequestHandler } from 'express'
+import { createClient } from 'redis'
 import { appointmentServices } from './appointment.service'
 import formatDate from './appointment.utils'
-
+const redisClient = createClient()
+const connectRedis = async () => await redisClient.connect()
+connectRedis()
 const createAppointmentController: RequestHandler = async (req, res) => {
   try {
     const { slotId } = req.body
@@ -107,7 +110,7 @@ const getUpcomingAppointmentsController: RequestHandler = async (req, res) => {
 }
 const startableAppointmentController: RequestHandler = async (req, res) => {
   try {
-    const date = formatDate(new Date())
+    const date = formatDate()
     const result = await appointmentServices.getStartableAppointments(date)
     res.status(200).json({
       status: true,
@@ -176,6 +179,31 @@ const allAppointmentsController: RequestHandler = async (req, res) => {
     })
   }
 }
+const getAppointment: RequestHandler = async (req, res) => {
+  try {
+    const { id } = req.params
+    res.setHeader('Content-Type', 'text/event-stream')
+    res.setHeader('Cache-Control', 'no-cache')
+    const data = await appointmentServices.getAppointment(id)
+    const response = {
+      status: true,
+      message: 'Appointment retreived successfully',
+      data,
+    }
+    res.write(`data: ${JSON.stringify(response)}\n\n`)
+    redisClient.subscribe(`appointment:${id}`, appointment => {
+      // console.log('message consumed: ' + appointment)
+      res.write(`data: ${appointment}\n\n`)
+    })
+  } catch (error: any) {
+    const response = {
+      status: false,
+      message: 'Appointment retreiving failed',
+      data: [error?.message],
+    }
+    res.write(`data: ${JSON.stringify(response)}\n\n`)
+  }
+}
 
 export const appointmentControllers = {
   createAppointmentController,
@@ -188,4 +216,5 @@ export const appointmentControllers = {
   deletableAppointmentController,
   existingAppointmentForSlotInDayController,
   allAppointmentsController,
+  getAppointment,
 }
