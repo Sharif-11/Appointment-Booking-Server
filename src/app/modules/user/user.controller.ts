@@ -45,6 +45,49 @@ const loginController: RequestHandler = async (req, res) => {
     })
   }
 }
+const userLoginController: RequestHandler = async (req, res) => {
+  try {
+    const { phoneNo } = req.body
+    const user = await userServices.findUserByPhone(phoneNo)
+    if (
+      !user ||
+      !bcrypt.compareSync(req.body.password, user.password) ||
+      user?.role === 'Doctor'
+    ) {
+      throw new Error('Phone number or password is wrong')
+    }
+    const token = await userAuth.createToken(phoneNo, user.role as Role)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, userId, ...others } = await User.findOne({
+      phoneNo,
+    })
+      .populate('userId')
+      .lean()
+    const { role } = others
+    const { _id, ...rest } = userId
+    const userInfo = {
+      userId: _id,
+      _id: others._id,
+      role,
+      phoneNo,
+      ...rest,
+    }
+    res.cookie('token', token, {
+      maxAge: 30 * 24 * 3600 * 1000,
+    })
+
+    res.json({
+      status: true,
+      message: 'log in successful',
+      data: userInfo,
+    })
+  } catch (error) {
+    res.status(401).json({
+      status: false,
+      message: error?.message,
+    })
+  }
+}
 const checkLoginController: RequestHandler = async (req, res) => {
   const token = req.cookies.token
   if (token) {
@@ -119,4 +162,5 @@ export const userControllers = {
   checkLoginController,
   updatePasswordController,
   logoutController,
+  userLoginController,
 }

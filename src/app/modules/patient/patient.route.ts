@@ -2,11 +2,13 @@ import express from 'express'
 import { authMiddlewares } from '../../middlewares/auth.middleware'
 import { appointmentControllers } from '../doctor/appointment/appointment.controller'
 import { patientQueueControllers } from '../patient-queue/patientQueue.controller'
+import { userControllers } from '../user/user.controller'
 import { bookingControllers } from './booking/booking.controller'
 import { patientControllers } from './patient.controller'
 import { patientValidators } from './patient.validator'
 
 const patientRoutes = express.Router()
+patientRoutes.post('/login', userControllers.userLoginController)
 patientRoutes.use(
   authMiddlewares.verifyTokenMiddleware,
   authMiddlewares.verifyUser('Patient'),
