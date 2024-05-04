@@ -12,6 +12,11 @@ patientRoutes.use(
   authMiddlewares.verifyUser('Patient'),
 )
 patientRoutes.post('/booking/:id', bookingControllers.createBookingController)
+patientRoutes.delete(
+  '/cancel-booking/:bookingId',
+  bookingControllers.cancelBookingController,
+)
+
 patientRoutes.post(
   '/check-booking/:id',
   bookingControllers.checkBookingController,

@@ -28,12 +28,6 @@ const createBooking = async (
     problemDescription,
   }
   const newBooking = await Booking.create([bookingInfo], { session })
-  setTimeout(async () => {
-    await Booking.deleteOne({
-      _id: newBooking[0]?._id,
-      paymentStatus: 'unpaid',
-    })
-  }, 60 * 1000)
   return newBooking[0]
 }
 const updateBookingStatus = async (
@@ -54,9 +48,24 @@ const deleteBooking = async (bookingId: string) => {
   const result = await Booking.findByIdAndDelete(bookingId, { new: true })
   return result
 }
+const cancelBooking = async (bookingId: string) => {
+  console.log({ bookingId })
+  const existedBooking = await Booking.findById(bookingId)
+  console.log(existedBooking)
+  if (!existedBooking) {
+    throw new Error('Booking does not exist')
+  }
+  if (existedBooking.paymentStatus === 'paid') {
+    throw new Error('Paid booking can not be canceled')
+  }
+  const result = await Booking.findByIdAndDelete(bookingId)
+  console.log({ result })
+  return result
+}
 export const bookingServices = {
   createBooking,
   updateBookingStatus,
   findExistedBooking,
   deleteBooking,
+  cancelBooking,
 }

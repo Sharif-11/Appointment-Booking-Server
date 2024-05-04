@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { RequestHandler } from 'express'
-import { bookingServices } from './booking.service'
+import mongoose from 'mongoose'
 import Slot from '../../doctor/slot/slot.model'
 import { paymentServices } from '../../payment/payment.service'
-import mongoose from 'mongoose'
+import { bookingServices } from './booking.service'
 
 const createBookingController: RequestHandler = async (req, res) => {
   const session = await mongoose.startSession()
@@ -42,10 +43,10 @@ const createBookingController: RequestHandler = async (req, res) => {
           data: { url: GatewayPageURL },
         })
       })
-      .catch(err => {
+      .catch(() => {
         throw new Error('payment initiation failed')
       })
-  } catch (error) {
+  } catch (error: any) {
     await session.abortTransaction()
     await session.endSession()
     res.status(500).json({
@@ -67,9 +68,9 @@ const checkBookingController: RequestHandler = async (req, res) => {
     res.status(200).json({
       status: true,
       message: 'existed booking checked successfully',
-      data: existedBooking ? true : false,
+      data: existedBooking ? existedBooking : false,
     })
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({
       status: false,
       message: 'existed booking checking failed',
@@ -77,7 +78,26 @@ const checkBookingController: RequestHandler = async (req, res) => {
     })
   }
 }
+const cancelBookingController: RequestHandler = async (req, res) => {
+  try {
+    const { bookingId } = req.params
+    const result = await bookingServices.cancelBooking(bookingId)
+
+    res.status(200).json({
+      status: true,
+      message: 'Booking cancelled successfully',
+      data: result ? false : result,
+    })
+  } catch (error: any) {
+    res.status(500).json({
+      status: false,
+      message: 'Booking cancellation failed',
+      errors: [error.message],
+    })
+  }
+}
 export const bookingControllers = {
   createBookingController,
   checkBookingController,
+  cancelBookingController,
 }
