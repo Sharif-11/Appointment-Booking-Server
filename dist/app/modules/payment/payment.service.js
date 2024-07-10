@@ -78,7 +78,7 @@ const confirmPayment = (paymentData, bookingId) => __awaiter(void 0, void 0, voi
             throw new Error('payment creation failed');
         }
         const updateObj = {
-            paymentId: newPayment._id,
+            paymentId: newPayment[0]._id,
             paymentStatus: 'paid',
         };
         const updateBooking = yield booking_service_1.bookingServices.updateBookingStatus(bookingId, updateObj, session);
@@ -86,7 +86,7 @@ const confirmPayment = (paymentData, bookingId) => __awaiter(void 0, void 0, voi
             throw new Error('update booking failed');
         }
         const appointment = yield appointment_model_1.default.findById(updateBooking.appointmentId);
-        const updatedAppointment = yield appointment_service_1.appointmentServices.updateAppointmentSlotCount(appointment === null || appointment === void 0 ? void 0 : appointment._id, session);
+        yield appointment_service_1.appointmentServices.updateAppointmentSlotCount(String(appointment === null || appointment === void 0 ? void 0 : appointment._id), session);
         yield session.commitTransaction();
         yield session.endSession();
     }

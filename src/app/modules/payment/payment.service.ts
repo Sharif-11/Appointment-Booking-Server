@@ -3,7 +3,6 @@ import SSLCommerzPayment from 'sslcommerz-lts'
 import config from '../../../config'
 import Appointment from '../doctor/appointment/appointment.model'
 import { appointmentServices } from '../doctor/appointment/appointment.service'
-import IBooking from '../patient/booking/booking.interface'
 import { bookingServices } from '../patient/booking/booking.service'
 import IPayment from './payment.interface'
 import Payment from './payment.model'
@@ -74,8 +73,8 @@ const confirmPayment = async (paymentData: IPayment, bookingId: string) => {
     if (!newPayment.length) {
       throw new Error('payment creation failed')
     }
-    const updateObj: Partial<IBooking> = {
-      paymentId: newPayment._id,
+    const updateObj = {
+      paymentId: newPayment[0]._id,
       paymentStatus: 'paid',
     }
     const updateBooking = await bookingServices.updateBookingStatus(
@@ -88,11 +87,10 @@ const confirmPayment = async (paymentData: IPayment, bookingId: string) => {
     }
     const appointment = await Appointment.findById(updateBooking.appointmentId)
 
-    const updatedAppointment =
-      await appointmentServices.updateAppointmentSlotCount(
-        appointment?._id,
-        session,
-      )
+    await appointmentServices.updateAppointmentSlotCount(
+      String(appointment?._id),
+      session,
+    )
     await session.commitTransaction()
     await session.endSession()
   } catch (error) {

@@ -1,6 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import mongoose from 'mongoose'
 import { appointmentServices } from '../../doctor/appointment/appointment.service'
-import IBooking from './booking.interface'
 import Booking from './booking.model'
 const findExistedBooking = async (appointmentId: string, patientId: string) => {
   const result = await Booking.findOne({ appointmentId, patientId })
@@ -32,7 +32,7 @@ const createBooking = async (
 }
 const updateBookingStatus = async (
   id: string,
-  updateObj: Partial<IBooking>,
+  updateObj: any,
   session?: mongoose.mongo.ClientSession,
 ) => {
   const result = await Booking.findByIdAndUpdate(

@@ -14,11 +14,14 @@ const confirmPaymentController: RequestHandler = async (req, res) => {
     await session.startTransaction()
     const { id: bookingId } = req.params
     const { tran_id: transactionId, amount, tran_date: date } = req.body
-    const payment = await paymentServices.createPayment({
-      transactionId,
-      date,
-      amount,
-    })
+    const payment = await paymentServices.createPayment(
+      {
+        transactionId,
+        date,
+        amount,
+      },
+      session,
+    )
     if (!payment) {
       throw new Error('payment creation failed')
     }
@@ -32,7 +35,7 @@ const confirmPaymentController: RequestHandler = async (req, res) => {
     const booking = await Booking.findById(bookingId)
     const updatedAppointment =
       await appointmentServices.updateAppointmentSlotCount(
-        booking?.appointmentId,
+        String(booking?.appointmentId),
         session,
       )
     if (!updatedAppointment) {

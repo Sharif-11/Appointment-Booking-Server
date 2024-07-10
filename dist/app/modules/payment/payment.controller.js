@@ -32,7 +32,7 @@ const confirmPaymentController = (req, res) => __awaiter(void 0, void 0, void 0,
             transactionId,
             date,
             amount,
-        });
+        }, session);
         if (!payment) {
             throw new Error('payment creation failed');
         }
@@ -44,7 +44,7 @@ const confirmPaymentController = (req, res) => __awaiter(void 0, void 0, void 0,
             throw new Error('booking update failed');
         }
         const booking = yield booking_model_1.default.findById(bookingId);
-        const updatedAppointment = yield appointment_service_1.appointmentServices.updateAppointmentSlotCount(booking === null || booking === void 0 ? void 0 : booking.appointmentId, session);
+        const updatedAppointment = yield appointment_service_1.appointmentServices.updateAppointmentSlotCount(String(booking === null || booking === void 0 ? void 0 : booking.appointmentId), session);
         if (!updatedAppointment) {
             throw new Error('appointment update failed');
         }
