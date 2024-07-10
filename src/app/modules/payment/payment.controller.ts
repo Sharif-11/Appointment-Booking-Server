@@ -1,13 +1,9 @@
 import { RequestHandler } from 'express'
 import mongoose from 'mongoose'
-import { createClient } from 'redis'
 import { appointmentServices } from '../doctor/appointment/appointment.service'
 import Booking from '../patient/booking/booking.model'
 import { bookingServices } from '../patient/booking/booking.service'
 import { paymentServices } from './payment.service'
-const redisClient = createClient()
-const connectRedis = async () => await redisClient.connect()
-connectRedis()
 const confirmPaymentController: RequestHandler = async (req, res) => {
   const session = await mongoose.startSession()
   try {
@@ -43,17 +39,6 @@ const confirmPaymentController: RequestHandler = async (req, res) => {
     }
     await session.commitTransaction()
     await session.endSession()
-    redisClient
-      .publish(
-        `appointment:${updatedAppointment._id}`,
-        JSON.stringify(updatedAppointment),
-      )
-      .then(() =>
-        console.log(
-          `Message published on: appointment:${updatedAppointment._id}`,
-        ),
-      )
-      .catch(err => console.log(err?.message))
     const html = `<h1 style="color: green;text-align:center">Payment Successful</h1>`
     res.set('Content-Type', 'text/html')
     res.send(html)

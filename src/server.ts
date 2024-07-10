@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import mongoose from 'mongoose'
-import { createClient } from 'redis'
 import app from './app'
 import config from './config'
 async function main() {
@@ -16,9 +15,9 @@ async function main() {
 
   // use `await mongoose.connect('mongodb://user:password@127.0.0.1:27017/test');` if your database has auth enabled
 }
-const redisClient = createClient()
-const connectRedis = async () => await redisClient.connect()
-connectRedis()
+// const redisClient = createClient()
+// const connectRedis = async () => await redisClient.connect()
+// connectRedis()
 
-export default redisClient
+// export default redisClient
 main().catch(err => console.log(err))

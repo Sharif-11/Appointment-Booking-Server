@@ -14,14 +14,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.paymentControllers = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
-const redis_1 = require("redis");
 const appointment_service_1 = require("../doctor/appointment/appointment.service");
 const booking_model_1 = __importDefault(require("../patient/booking/booking.model"));
 const booking_service_1 = require("../patient/booking/booking.service");
 const payment_service_1 = require("./payment.service");
-const redisClient = (0, redis_1.createClient)();
-const connectRedis = () => __awaiter(void 0, void 0, void 0, function* () { return yield redisClient.connect(); });
-connectRedis();
 const confirmPaymentController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const session = yield mongoose_1.default.startSession();
     try {
@@ -50,10 +46,6 @@ const confirmPaymentController = (req, res) => __awaiter(void 0, void 0, void 0,
         }
         yield session.commitTransaction();
         yield session.endSession();
-        redisClient
-            .publish(`appointment:${updatedAppointment._id}`, JSON.stringify(updatedAppointment))
-            .then(() => console.log(`Message published on: appointment:${updatedAppointment._id}`))
-            .catch(err => console.log(err === null || err === void 0 ? void 0 : err.message));
         const html = `<h1 style="color: green;text-align:center">Payment Successful</h1>`;
         res.set('Content-Type', 'text/html');
         res.send(html);

@@ -14,7 +14,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const mongoose_1 = __importDefault(require("mongoose"));
-const redis_1 = require("redis");
 const app_1 = __importDefault(require("./app"));
 const config_1 = __importDefault(require("./config"));
 function main() {
@@ -32,8 +31,8 @@ function main() {
         // use `await mongoose.connect('mongodb://user:password@127.0.0.1:27017/test');` if your database has auth enabled
     });
 }
-const redisClient = (0, redis_1.createClient)();
-const connectRedis = () => __awaiter(void 0, void 0, void 0, function* () { return yield redisClient.connect(); });
-connectRedis();
-exports.default = redisClient;
+// const redisClient = createClient()
+// const connectRedis = async () => await redisClient.connect()
+// connectRedis()
+// export default redisClient
 main().catch(err => console.log(err));

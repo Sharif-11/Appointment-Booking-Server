@@ -1,11 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { RequestHandler } from 'express'
-import { createClient } from 'redis'
 import { appointmentServices } from './appointment.service'
 import formatDate from './appointment.utils'
-const redisClient = createClient()
-const connectRedis = async () => await redisClient.connect()
-connectRedis()
+
 const createAppointmentController: RequestHandler = async (req, res) => {
   try {
     const { slotId } = req.body
@@ -191,10 +188,6 @@ const getAppointment: RequestHandler = async (req, res) => {
       data,
     }
     res.write(`data: ${JSON.stringify(response)}\n\n`)
-    redisClient.subscribe(`appointment:${id}`, appointment => {
-      // console.log('message consumed: ' + appointment)
-      res.write(`data: ${appointment}\n\n`)
-    })
   } catch (error: any) {
     const response = {
       status: false,
