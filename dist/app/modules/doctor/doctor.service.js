@@ -25,8 +25,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.doctorServices = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
-const doctor_model_1 = __importDefault(require("./doctor.model"));
 const user_model_1 = __importDefault(require("../user/user.model"));
+const doctor_model_1 = __importDefault(require("./doctor.model"));
 const createDoctorService = (userData) => __awaiter(void 0, void 0, void 0, function* () {
     const role = 'Doctor';
     const { phoneNo, password } = userData, doctor = __rest(userData, ["phoneNo", "password"]);
@@ -39,8 +39,10 @@ const createDoctorService = (userData) => __awaiter(void 0, void 0, void 0, func
         if (!newDoctor.length) {
             throw new Error('doctor creation failed');
         }
-        user.userId = newDoctor[0]._id;
-        const newUser = yield user_model_1.default.create([user], { session });
+        // user.userId = newDoctor[0]._id
+        const newUser = yield user_model_1.default.create([Object.assign(Object.assign({}, user), { userId: newDoctor[0]._id })], {
+            session,
+        });
         if (!newUser.length) {
             throw new Error('user creation failed');
         }

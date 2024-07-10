@@ -17,8 +17,11 @@ const createPatientService = async userData => {
     if (!newPatient.length) {
       throw new Error('patient creation failed')
     }
-    user.userId = newPatient[0]._id
-    const newUser = await User.create([user], { session })
+    // user.userId = newPatient[0]._id
+    const newUser = await User.create(
+      [{ ...user, userId: newPatient[0]._id }],
+      { session },
+    )
     if (!newUser.length) {
       throw new Error('user creation failed')
     }

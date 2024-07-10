@@ -29,8 +29,8 @@ const createPatientService = (userData) => __awaiter(void 0, void 0, void 0, fun
         if (!newPatient.length) {
             throw new Error('patient creation failed');
         }
-        user.userId = newPatient[0]._id;
-        const newUser = yield user_model_1.default.create([user], { session });
+        // user.userId = newPatient[0]._id
+        const newUser = yield user_model_1.default.create([Object.assign(Object.assign({}, user), { userId: newPatient[0]._id })], { session });
         if (!newUser.length) {
             throw new Error('user creation failed');
         }

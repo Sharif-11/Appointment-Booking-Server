@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
-import Doctor from './doctor.model'
 import User from '../user/user.model'
 import IDoctor from './doctor.interface'
+import Doctor from './doctor.model'
 
 const createDoctorService = async userData => {
   const role = 'Doctor'
@@ -15,8 +15,10 @@ const createDoctorService = async userData => {
     if (!newDoctor.length) {
       throw new Error('doctor creation failed')
     }
-    user.userId = newDoctor[0]._id
-    const newUser = await User.create([user], { session })
+    // user.userId = newDoctor[0]._id
+    const newUser = await User.create([{ ...user, userId: newDoctor[0]._id }], {
+      session,
+    })
     if (!newUser.length) {
       throw new Error('user creation failed')
     }
