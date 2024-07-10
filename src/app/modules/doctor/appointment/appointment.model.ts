@@ -33,7 +33,7 @@ appointmentSchema.pre('save', async function (next) {
   const appoinment = this
   const existedAppointment = await Appointment.findOne({
     slotId: appoinment.slotId,
-    date: formatDate(new Date()),
+    date: formatDate(),
   })
   if (existedAppointment) {
     next(new Error('Appointment for this date with this slotId already exist'))

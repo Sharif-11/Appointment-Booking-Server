@@ -43,7 +43,7 @@ appointmentSchema.pre('save', function (next) {
         const appoinment = this;
         const existedAppointment = yield Appointment.findOne({
             slotId: appoinment.slotId,
-            date: (0, appointment_utils_1.default)(new Date()),
+            date: (0, appointment_utils_1.default)(),
         });
         if (existedAppointment) {
             next(new Error('Appointment for this date with this slotId already exist'));

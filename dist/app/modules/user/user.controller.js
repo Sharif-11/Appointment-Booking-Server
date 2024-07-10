@@ -45,7 +45,7 @@ const loginController = (req, res) => __awaiter(void 0, void 0, void 0, function
             .populate('userId')
             .lean(), { password, userId } = _a, others = __rest(_a, ["password", "userId"]);
         const { role } = others;
-        const { _id } = userId, rest = __rest(userId, ["_id"]);
+        const { _id } = user, rest = __rest(user, ["_id"]);
         const userInfo = Object.assign({ userId: _id, _id: others._id, role,
             phoneNo }, rest);
         res.cookie('token', token, {
@@ -81,7 +81,7 @@ const userLoginController = (req, res) => __awaiter(void 0, void 0, void 0, func
             .populate('userId')
             .lean(), { password, userId } = _b, others = __rest(_b, ["password", "userId"]);
         const { role } = others;
-        const { _id } = userId, rest = __rest(userId, ["_id"]);
+        const { _id } = user, rest = __rest(user, ["_id"]);
         const userInfo = Object.assign({ userId: _id, _id: others._id, role,
             phoneNo }, rest);
         res.cookie('token', token, {
@@ -106,14 +106,17 @@ const checkLoginController = (req, res) => __awaiter(void 0, void 0, void 0, fun
         jsonwebtoken_1.default.verify(token, config_1.default.jwt_secret, (err, decoded) => __awaiter(void 0, void 0, void 0, function* () {
             if (!err) {
                 const { phoneNo } = decoded;
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 const _c = yield user_model_1.default.findOne({
                     phoneNo,
                 })
                     .populate('userId')
                     .lean(), { password, userId } = _c, others = __rest(_c, ["password", "userId"]);
                 const { role } = others;
-                const { _id } = userId, rest = __rest(userId, ["_id"]);
-                const userInfo = Object.assign({ userId: _id, _id: others._id, role,
+                const rest = __rest(userId, []);
+                const userInfo = Object.assign({ 
+                    // userId: _id,
+                    _id: others._id, role,
                     phoneNo }, rest);
                 res.status(200).json({
                     status: true,

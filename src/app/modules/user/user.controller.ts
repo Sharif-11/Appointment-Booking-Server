@@ -21,7 +21,7 @@ const loginController: RequestHandler = async (req, res) => {
       .populate('userId')
       .lean()
     const { role } = others
-    const { _id, ...rest } = userId
+    const { _id, ...rest } = user
     const userInfo = {
       userId: _id,
       _id: others._id,
@@ -64,7 +64,7 @@ const userLoginController: RequestHandler = async (req, res) => {
       .populate('userId')
       .lean()
     const { role } = others
-    const { _id, ...rest } = userId
+    const { _id, ...rest } = user
     const userInfo = {
       userId: _id,
       _id: others._id,
@@ -94,15 +94,16 @@ const checkLoginController: RequestHandler = async (req, res) => {
     jwt.verify(token, config.jwt_secret as string, async (err, decoded) => {
       if (!err) {
         const { phoneNo } = decoded
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { password, userId, ...others } = await User.findOne({
           phoneNo,
         })
           .populate('userId')
           .lean()
         const { role } = others
-        const { _id, ...rest } = userId
+        const { ...rest } = userId
         const userInfo = {
-          userId: _id,
+          // userId: _id,
           _id: others._id,
           role,
           phoneNo,
