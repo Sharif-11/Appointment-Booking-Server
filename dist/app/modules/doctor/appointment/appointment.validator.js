@@ -7,7 +7,7 @@ const handleValidationError = (req, res, next) => {
         return res.status(400).json({
             success: false,
             message: 'invalid request',
-            errors: errors === null || errors === void 0 ? void 0 : errors.errors.map(e => e.msg),
+            errors: errors.array().map((e) => e.msg),
         });
     }
     next();
