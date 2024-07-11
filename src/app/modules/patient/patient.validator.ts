@@ -1,6 +1,6 @@
+import { body } from 'express-validator'
 import mongoose from 'mongoose'
 import handleValidationError from '../../middlewares/req.validator'
-import { body } from 'express-validator'
 
 const validatePatient = [
   body('name').notEmpty().withMessage('Name is required'),
@@ -14,9 +14,9 @@ const validatePatient = [
     .withMessage('Date of Birth is required')
     .isDate({ format: 'YYYY-MM-DD' })
     .withMessage('date must be in yyyy-mm-dd format'),
-  body('gender')
-    .isIn(['male', 'female', 'others'])
-    .withMessage('Invalid gender'),
+  // body('gender')
+  //   .isIn(['male', 'female', 'others'])
+  //   .withMessage('Invalid gender'),
   handleValidationError,
 ]
 
