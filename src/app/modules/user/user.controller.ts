@@ -66,9 +66,10 @@ const userLoginController: RequestHandler = async (req, res) => {
     // console.log({ userData })
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, role, userId, ...others } = userData
-    const { name, email, dateOfBirth } = JSON.parse(JSON.stringify(userId))
+    const { name, email, dateOfBirth, _id } = JSON.parse(JSON.stringify(userId))
     const userInfo = {
       _id: others._id,
+      userId: _id,
       role,
       phoneNo,
       ...others,
