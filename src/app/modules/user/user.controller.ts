@@ -10,27 +10,38 @@ const loginController: RequestHandler = async (req, res) => {
   try {
     const { phoneNo } = req.body
     const user = await userServices.findUserByPhone(phoneNo)
-    if (!user || !bcrypt.compareSync(req.body.password, user.password)) {
+    if (
+      !user ||
+      !bcrypt.compareSync(req.body.password, user.password) ||
+      user?.role === 'Patient'
+    ) {
       throw new Error('Phone number or password is wrong')
     }
     const token = await userAuth.createToken(phoneNo, user.role as Role)
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, userId, ...others } = await User.findOne({
+
+    const userData = await User.findOne({
       phoneNo,
     })
       .populate('userId')
       .lean()
-    const { role } = others
-    const { _id, ...rest } = user
+    // console.log({ userData })
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, role, userId, ...others } = userData
+    const { name, email, dateOfBirth, _id } = JSON.parse(JSON.stringify(userId))
     const userInfo = {
-      userId: _id,
       _id: others._id,
+      userId: _id,
       role,
       phoneNo,
-      ...rest,
+      ...others,
+      token,
+      name,
+      email,
+      dateOfBirth,
     }
     res.cookie('token', token, {
       maxAge: 30 * 24 * 3600 * 1000,
+      secure: true,
     })
 
     res.json({
@@ -80,6 +91,7 @@ const userLoginController: RequestHandler = async (req, res) => {
     }
     res.cookie('token', token, {
       maxAge: 30 * 24 * 3600 * 1000,
+      secure: true,
     })
 
     res.json({
